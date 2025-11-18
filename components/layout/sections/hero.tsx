@@ -1,5 +1,6 @@
 
 "use client";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -10,7 +11,7 @@ import Link from "next/link";
 
 export const HeroSection = () => {
   const { theme } = useTheme();
-  
+  const [trackingNumber, setTrackingNumber] = useState("");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -42,11 +43,12 @@ export const HeroSection = () => {
               <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
             </Button>
 
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4 md:w-1/2 mx-auto">
               <Input
                 type="text"
                 placeholder="Enter tracking number"
-                
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
                 className="text-lg h-14"
               />
               <Button type="submit" size="lg" className="w-full">
