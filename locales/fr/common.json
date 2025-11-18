@@ -1,0 +1,92 @@
+
+{
+  "nav": {
+    "home": "Accueil",
+    "about": "À propos",
+    "team": "Équipe",
+    "track": "Suivre",
+    "testimonials": "Témoignages",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Bienvenue chez RapidWave Logistics",
+    "subtitle": "Votre Partenaire de Confiance en Expédition Mondiale",
+    "description": "Nous transportons des marchandises depuis 5 ans avec fiabilité et excellence. Découvrez des solutions logistiques sur mesure adaptées à vos besoins.",
+    "cta": "Commencer",
+    "ctaSecondary": "En savoir plus"
+  },
+  "about": {
+    "title": "À propos de RapidWave Logistics",
+    "subtitle": "5 Ans d'Excellence dans le Transport",
+    "content": "RapidWave Logistics transporte des marchandises depuis 5 ans, et nous avons récemment lancé notre site web pour servir plus de clients dans le monde entier. Notre engagement envers la fiabilité, la rapidité et la satisfaction client a fait de nous un nom de confiance dans l'industrie logistique.",
+    "mission": "Notre Mission",
+    "missionText": "Fournir des solutions d'expédition de classe mondiale qui connectent les entreprises et les particuliers à travers le monde avec efficacité et soin.",
+    "vision": "Notre Vision",
+    "visionText": "Être le leader en logistique reconnu pour l'innovation, la durabilité et la qualité de service exceptionnelle."
+  },
+  "team": {
+    "title": "Rencontrez Notre Équipe",
+    "subtitle": "Les Personnes Derrière Vos Expéditions"
+  },
+  "track": {
+    "title": "Suivez Votre Envoi",
+    "subtitle": "Entrez votre numéro de suivi pour voir les mises à jour en temps réel",
+    "placeholder": "Entrez le numéro de suivi",
+    "button": "Suivre l'Envoi",
+    "note": "Fonctionnalité de suivi bientôt disponible"
+  },
+  "testimonials": {
+    "title": "Ce Que Disent Nos Clients",
+    "subtitle": "Des expériences réelles de vrais clients",
+    "items": [
+      {
+        "name": "Sarah Mitchell",
+        "userName": "@sarahmitchell",
+        "comment": "Nous utilisons RapidWave pour nos envois mensuels vers l'Europe depuis un an. Le suivi est toujours précis et nos colis arrivent à temps. Leur service client répond rapidement quand nous avons des questions!",
+        "rating": 5.0
+      },
+      {
+        "name": "Marcus Chen",
+        "userName": "@marcusc_logistics",
+        "comment": "Nous avons changé de transporteur après qu'un ami nous ait recommandé RapidWave. Meilleure décision pour notre commerce en ligne. Ils gèrent nos envois internationaux avec soin, zéro colis perdu en 8 mois.",
+        "rating": 4.8
+      },
+      {
+        "name": "Elena Rodriguez",
+        "userName": "@elena_r",
+        "comment": "En tant que propriétaire de petite entreprise, j'ai besoin d'expédition fiable et abordable. RapidWave répond aux deux critères. Leurs tarifs sont compétitifs et mes clients reçoivent toujours leurs commandes en parfait état.",
+        "rating": 4.9
+      },
+      {
+        "name": "David Thompson",
+        "userName": "@d_thompson_tech",
+        "comment": "Je travaille avec RapidWave depuis leurs débuts. Je les ai vus grandir et améliorer leur service année après année. La touche personnelle qu'ils apportent à la logistique est rare de nos jours. Je recommande vivement.",
+        "rating": 5.0
+      },
+      {
+        "name": "Amara Okafor",
+        "userName": "@amara_ok",
+        "comment": "Ce qui m'a le plus impressionné, c'est la façon dont ils ont géré un retard causé par les douanes. Ils m'ont tenu au courant à chaque étape et ont travaillé pour le résoudre rapidement. C'est ce genre de service qui fidélise les clients.",
+        "rating": 4.9
+      },
+      {
+        "name": "James Wilson",
+        "userName": "@jwilson_imports",
+        "comment": "Notre entreprise expédie des électroniques fragiles à l'international. Les recommandations d'emballage de RapidWave et leur manipulation soigneuse ont donné un taux de livraison sûre de 99%. Ils comprennent ce dont les entreprises ont besoin.",
+        "rating": 5.0
+      }
+    ]
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Nous sommes là pour vous aider avec vos besoins d'expédition",
+    "name": "Nom",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Envoyer le Message"
+  },
+  "footer": {
+    "tagline": "RapidWave Logistics - 5 Ans de Service de Confiance",
+    "rights": "Tous droits réservés."
+  }
+}

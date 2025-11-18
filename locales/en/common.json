@@ -1,0 +1,92 @@
+
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "team": "Team",
+    "track": "Track",
+    "testimonials": "Testimonials",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Welcome to RapidWave Logistics",
+    "subtitle": "Your Trusted Partner in Global Shipping",
+    "description": "We've been transporting goods for 5 years with reliability and excellence. Experience seamless logistics solutions tailored to your needs.",
+    "cta": "Get Started",
+    "ctaSecondary": "Learn More"
+  },
+  "about": {
+    "title": "About RapidWave Logistics",
+    "subtitle": "5 Years of Excellence in Transportation",
+    "content": "RapidWave Logistics has been transporting goods for 5 years, and we recently launched our website to serve more customers worldwide. Our commitment to reliability, speed, and customer satisfaction has made us a trusted name in the logistics industry.",
+    "mission": "Our Mission",
+    "missionText": "To provide world-class shipping solutions that connect businesses and individuals across the globe with efficiency and care.",
+    "vision": "Our Vision",
+    "visionText": "To be the leading logistics provider known for innovation, sustainability, and exceptional service quality."
+  },
+  "team": {
+    "title": "Meet Our Team",
+    "subtitle": "The People Behind Your Shipments"
+  },
+  "track": {
+    "title": "Track Your Shipment",
+    "subtitle": "Enter your tracking number to see real-time updates",
+    "placeholder": "Enter tracking number",
+    "button": "Track Shipment",
+    "note": "Tracking functionality coming soon"
+  },
+  "testimonials": {
+    "title": "What Our Customers Say",
+    "subtitle": "Real experiences from real customers",
+    "items": [
+      {
+        "name": "Sarah Mitchell",
+        "userName": "@sarahmitchell",
+        "comment": "We've been using RapidWave for our monthly shipments to Europe for the past year. The tracking is always accurate, and our packages arrive on time. Their customer service team actually responds quickly when we have questions!",
+        "rating": 5.0
+      },
+      {
+        "name": "Marcus Chen",
+        "userName": "@marcusc_logistics",
+        "comment": "Switched from our previous carrier after a friend recommended RapidWave. Best decision we made for our e-commerce business. They handle our international shipments with care, and we've had zero lost packages in 8 months.",
+        "rating": 4.8
+      },
+      {
+        "name": "Elena Rodriguez",
+        "userName": "@elena_r",
+        "comment": "As a small business owner, I need reliable shipping that won't break the bank. RapidWave delivers on both fronts. Their rates are competitive and my customers always receive their orders in perfect condition.",
+        "rating": 4.9
+      },
+      {
+        "name": "David Thompson",
+        "userName": "@d_thompson_tech",
+        "comment": "Been working with RapidWave since they started. Watched them grow and improve their service year after year. The personal touch they bring to logistics is rare these days. Highly recommend for anyone shipping overseas.",
+        "rating": 5.0
+      },
+      {
+        "name": "Amara Okafor",
+        "userName": "@amara_ok",
+        "comment": "What impressed me most was how they handled a delay caused by customs. They kept me updated every step of the way and worked to resolve it quickly. That's the kind of service that keeps customers coming back.",
+        "rating": 4.9
+      },
+      {
+        "name": "James Wilson",
+        "userName": "@jwilson_imports",
+        "comment": "Our company ships fragile electronics internationally. RapidWave's packaging recommendations and careful handling have resulted in a 99% safe delivery rate. They understand what businesses need from a shipping partner.",
+        "rating": 5.0
+      }
+    ]
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "subtitle": "We're here to help with your shipping needs",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "submit": "Send Message"
+  },
+  "footer": {
+    "tagline": "RapidWave Logistics - 5 Years of Trusted Service",
+    "rights": "All rights reserved."
+  }
+}

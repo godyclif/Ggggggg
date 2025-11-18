@@ -24,55 +24,54 @@ interface ReviewProps {
   rating: number;
 }
 
-const reviewList: ReviewProps[] = [
+const testimonialList: ReviewProps[] = [
   {
-    image: "https://github.com/shadcn.png",
-    name: "John Doe",
-    userName: "Product Manager",
+    image: "https://i.pravatar.cc/150?img=12",
+    name: "Sarah Mitchell",
+    userName: "@sarahmitchell",
     comment:
-      "Wow NextJs + Shadcn is awesome!. This template lets me change colors, fonts and images to match my brand identity. ",
+      "We've been using RapidWave for our monthly shipments to Europe for the past year. The tracking is always accurate, and our packages arrive on time. Their customer service team actually responds quickly when we have questions!",
     rating: 5.0,
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "Sophia Collins",
-    userName: "Cybersecurity Analyst",
+    image: "https://i.pravatar.cc/150?img=33",
+    name: "Marcus Chen",
+    userName: "@marcusc_logistics",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna. ",
+      "Switched from our previous carrier after a friend recommended RapidWave. Best decision we made for our e-commerce business. They handle our international shipments with care, and we've had zero lost packages in 8 months.",
     rating: 4.8,
   },
-
   {
-    image: "https://github.com/shadcn.png",
-    name: "Adam Johnson",
-    userName: "Chief Technology Officer",
+    image: "https://i.pravatar.cc/150?img=47",
+    name: "Elena Rodriguez",
+    userName: "@elena_r",
     comment:
-      "Lorem ipsum dolor sit amet,exercitation. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+      "As a small business owner, I need reliable shipping that won't break the bank. RapidWave delivers on both fronts. Their rates are competitive and my customers always receive their orders in perfect condition.",
     rating: 4.9,
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "Ethan Parker",
-    userName: "Data Scientist",
+    image: "https://i.pravatar.cc/150?img=68",
+    name: "David Thompson",
+    userName: "@d_thompson_tech",
     comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod labore et dolore magna aliqua. Ut enim ad minim veniam.",
+      "Been working with RapidWave since they started. Watched them grow and improve their service year after year. The personal touch they bring to logistics is rare these days. Highly recommend for anyone shipping overseas.",
     rating: 5.0,
   },
   {
-    image: "https://github.com/shadcn.png",
-    name: "Ava Mitchell",
-    userName: "IT Project Manager",
+    image: "https://i.pravatar.cc/150?img=25",
+    name: "Amara Okafor",
+    userName: "@amara_ok",
     comment:
-      "Lorem ipsum dolor sit amet, tempor incididunt  aliqua. Ut enim ad minim veniam, quis nostrud incididunt consectetur adipiscing elit.",
-    rating: 5.0,
-  },
-  {
-    image: "https://github.com/shadcn.png",
-    name: "Isabella Reed",
-    userName: "DevOps Engineer",
-    comment:
-      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+      "What impressed me most was how they handled a delay caused by customs. They kept me updated every step of the way and worked to resolve it quickly. That's the kind of service that keeps customers coming back.",
     rating: 4.9,
+  },
+  {
+    image: "https://i.pravatar.cc/150?img=52",
+    name: "James Wilson",
+    userName: "@jwilson_imports",
+    comment:
+      "Our company ships fragile electronics internationally. RapidWave's packaging recommendations and careful handling have resulted in a 99% safe delivery rate. They understand what businesses need from a shipping partner.",
+    rating: 5.0,
   },
 ];
 
@@ -96,7 +95,7 @@ export const TestimonialSection = () => {
         className="relative w-[80%] sm:w-[90%] lg:max-w-screen-xl mx-auto"
       >
         <CarouselContent>
-          {reviewList.map((review) => (
+          {testimonialList.map((review) => (
             <CarouselItem
               key={review.name}
               className="md:basis-1/2 lg:basis-1/3"
@@ -117,10 +116,15 @@ export const TestimonialSection = () => {
                   <div className="flex flex-row items-center gap-4">
                     <Avatar>
                       <AvatarImage
-                        src="https://avatars.githubusercontent.com/u/75042455?v=4"
-                        alt="radix"
+                        src={review.image}
+                        alt="User Avatar"
                       />
-                      <AvatarFallback>SV</AvatarFallback>
+                      <AvatarFallback>
+                        {review.name
+                          .split(" ")
+                          .map((n) => n[0])
+                          .join("")}
+                      </AvatarFallback>
                     </Avatar>
 
                     <div className="flex flex-col">
