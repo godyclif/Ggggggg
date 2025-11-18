@@ -345,7 +345,7 @@ export function GoogleMap({
       onLocationChange(lngLat.lat, lngLat.lng);
       setCurrentMarkerPosition({ lng: lngLat.lng, lat: lngLat.lat });
       
-      // Only draw covered distance line in edit mode
+      // In edit mode, draw covered distance line
       if (isEditMode && originalPositionRef.current && map.loaded()) {
         drawCoveredDistanceLine(
           map,
@@ -356,6 +356,17 @@ export function GoogleMap({
           recipientLng,
           recipientLat
         );
+      }
+      
+      // In create mode, check if marker moved from original position
+      if (!isEditMode && originalPositionRef.current) {
+        const distance = calculateStraightLineDistance(
+          originalPositionRef.current.lng,
+          originalPositionRef.current.lat,
+          lngLat.lng,
+          lngLat.lat
+        );
+        setShowUpdateOriginButton(distance > 0.1); // Show button if moved more than 100m
       }
       
       // Clear previous timeout
@@ -374,8 +385,8 @@ export function GoogleMap({
       onLocationChange(e.lngLat.lat, e.lngLat.lng);
       setCurrentMarkerPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat });
       
-      // Check if marker has moved from original position (only in edit mode)
-      if (isEditMode && originalPositionRef.current) {
+      // Check if marker has moved from original position
+      if (originalPositionRef.current) {
         const distance = calculateStraightLineDistance(
           originalPositionRef.current.lng,
           originalPositionRef.current.lat,
@@ -534,7 +545,7 @@ export function GoogleMap({
     <div className="space-y-2">
       <div className="relative w-full h-[400px] rounded-lg overflow-hidden border">
         <div ref={mapContainerRef} className="w-full h-full" />
-        {isEditMode && showUpdateOriginButton && (
+        {showUpdateOriginButton && (
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
             <Button onClick={handleUpdateOrigin} size="sm" className="shadow-lg">
               Set as New Origin
