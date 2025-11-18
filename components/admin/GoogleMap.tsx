@@ -1,76 +1,67 @@
 
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { Loader } from "@googlemaps/js-api-loader";
+import { useEffect, useRef } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
 
-interface GoogleMapProps {
+interface MapboxMapProps {
   latitude: number;
   longitude: number;
   onLocationChange: (lat: number, lng: number) => void;
 }
 
-export function GoogleMap({ latitude, longitude, onLocationChange }: GoogleMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const [map, setMap] = useState<google.maps.Map | null>(null);
-  const [marker, setMarker] = useState<google.maps.Marker | null>(null);
+export function GoogleMap({ latitude, longitude, onLocationChange }: MapboxMapProps) {
+  const mapContainerRef = useRef<HTMLDivElement>(null);
+  const mapRef = useRef<mapboxgl.Map | null>(null);
+  const markerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
-    const initMap = async () => {
-      const loader = new Loader({
-        apiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-        version: "weekly",
-      });
+    if (!mapContainerRef.current) return;
 
-      const { Map } = await loader.importLibrary("maps");
-      const { Marker } = await loader.importLibrary("marker");
+    mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
-      const defaultCenter = { lat: latitude || 40.7128, lng: longitude || -74.0060 };
+    const map = new mapboxgl.Map({
+      container: mapContainerRef.current,
+      style: "mapbox://styles/mapbox/streets-v12",
+      center: [longitude || -74.0060, latitude || 40.7128],
+      zoom: 12,
+    });
 
-      const mapInstance = new Map(mapRef.current!, {
-        center: defaultCenter,
-        zoom: 12,
-        mapId: "SHIPMENT_MAP",
-      });
+    const marker = new mapboxgl.Marker({
+      draggable: true,
+    })
+      .setLngLat([longitude || -74.0060, latitude || 40.7128])
+      .addTo(map);
 
-      const markerInstance = new Marker({
-        map: mapInstance,
-        position: defaultCenter,
-        draggable: true,
-      });
+    marker.on("dragend", () => {
+      const lngLat = marker.getLngLat();
+      onLocationChange(lngLat.lat, lngLat.lng);
+    });
 
-      markerInstance.addListener("dragend", () => {
-        const position = markerInstance.getPosition();
-        if (position) {
-          onLocationChange(position.lat(), position.lng());
-        }
-      });
+    map.on("click", (e) => {
+      marker.setLngLat(e.lngLat);
+      onLocationChange(e.lngLat.lat, e.lngLat.lng);
+    });
 
-      mapInstance.addListener("click", (e: google.maps.MapMouseEvent) => {
-        if (e.latLng) {
-          markerInstance.setPosition(e.latLng);
-          onLocationChange(e.latLng.lat(), e.latLng.lng());
-        }
-      });
+    mapRef.current = map;
+    markerRef.current = marker;
 
-      setMap(mapInstance);
-      setMarker(markerInstance);
+    return () => {
+      map.remove();
     };
-
-    initMap();
   }, []);
 
   useEffect(() => {
-    if (marker && latitude && longitude) {
-      const newPosition = { lat: latitude, lng: longitude };
-      marker.setPosition(newPosition);
-      map?.setCenter(newPosition);
+    if (markerRef.current && latitude && longitude) {
+      markerRef.current.setLngLat([longitude, latitude]);
+      mapRef.current?.setCenter([longitude, latitude]);
     }
-  }, [latitude, longitude, marker, map]);
+  }, [latitude, longitude]);
 
   return (
     <div className="w-full h-[400px] rounded-lg overflow-hidden border">
-      <div ref={mapRef} className="w-full h-full" />
+      <div ref={mapContainerRef} className="w-full h-full" />
     </div>
   );
 }
