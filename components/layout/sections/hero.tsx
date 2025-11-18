@@ -43,7 +43,7 @@ export const HeroSection = () => {
               <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
             </Button>
 
-            <form onSubmit={handleSubmit} className="space-y-4 md:w-1/2 mx-auto">
+            <form onSubmit={handleSubmit} className="space-y-4 md:w-1/2 mx-auto mt-8">
               <Input
                 type="text"
                 placeholder="Enter tracking number"
@@ -51,7 +51,7 @@ export const HeroSection = () => {
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 className="text-lg h-14"
               />
-              <Button type="submit" size="lg" className="w-full">
+              <Button type="submit" size="lg" className="w-full opacity-100">
                 Track Shipment
               </Button>
             </form>

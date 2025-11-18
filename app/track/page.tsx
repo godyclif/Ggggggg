@@ -39,7 +39,7 @@ export default function TrackPage() {
               onChange={(e) => setTrackingNumber(e.target.value)}
               className="text-lg h-14"
             />
-            <Button type="submit" size="lg" className="w-full">
+            <Button type="submit" size="lg" className="w-full opacity-100">
               Track Shipment
             </Button>
           </form>
