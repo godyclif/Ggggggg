@@ -69,8 +69,8 @@ export default function AdminDashboard() {
         </div>
 
         {/* 2x2 Grid Navigation */}
-        <div className="max-w-4xl mx-auto mb-12">
-          <div className="grid grid-cols-2 gap-6">
+        <div className="max-w-3xl mx-auto mb-12">
+          <div className="grid grid-cols-2 gap-4">
             {navItems.map((item) => {
               const Icon = item.icon;
               return (
@@ -78,14 +78,14 @@ export default function AdminDashboard() {
                   key={item.id}
                   onClick={() => setActiveTab(item.id)}
                   className={cn(
-                    "flex flex-col items-center justify-center gap-4 p-8 rounded-xl border-2 transition-all",
+                    "flex items-center gap-3 px-6 py-4 rounded-lg border-2 transition-all",
                     activeTab === item.id
-                      ? "bg-primary text-primary-foreground border-primary shadow-lg scale-105"
+                      ? "bg-primary text-primary-foreground border-primary shadow-md"
                       : "bg-card hover:bg-muted border-border hover:border-primary/50"
                   )}
                 >
-                  <Icon className="h-12 w-12" />
-                  <span className="text-lg font-semibold">{item.label}</span>
+                  <Icon className="h-5 w-5" />
+                  <span className="text-base font-semibold">{item.label}</span>
                 </button>
               );
             })}

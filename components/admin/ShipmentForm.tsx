@@ -68,6 +68,29 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
     setFormData({ ...formData, latitude: lat, longitude: lng });
   };
 
+  // Geocode recipient address to get coordinates
+  const geocodeRecipientAddress = async () => {
+    const { recipientAddress, recipientCity, recipientState, recipientCountry } = formData;
+    
+    if (!recipientAddress || !recipientCity) return;
+
+    const query = `${recipientAddress}, ${recipientCity}, ${recipientState}, ${recipientCountry}`;
+    const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(query)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}`;
+
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+
+      if (data.features && data.features.length > 0) {
+        const [lng, lat] = data.features[0].center;
+        return { lat, lng };
+      }
+    } catch (error) {
+      console.error('Error geocoding address:', error);
+    }
+    return null;
+  };
+
   return (
     <div className="space-y-6">
       {/* Sender Information Card */}
@@ -417,7 +440,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
         <CardHeader className="bg-muted/50">
           <CardTitle className="flex items-center gap-2 text-lg">
             <MapPin className="h-5 w-5" />
-            Shipment Location
+            Shipment Location & Route
           </CardTitle>
         </CardHeader>
         <CardContent className="pt-6">
@@ -425,9 +448,10 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
             latitude={formData.latitude}
             longitude={formData.longitude}
             onLocationChange={handleLocationChange}
+            showRoute={false}
           />
           <p className="text-sm text-muted-foreground mt-4">
-            Click on the map or drag the marker to set the shipment location.
+            Click on the map or drag the blue marker to set the current shipment location. The route to the destination will be displayed automatically.
           </p>
         </CardContent>
       </Card>

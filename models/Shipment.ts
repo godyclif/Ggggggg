@@ -1,4 +1,3 @@
-
 import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IShipment extends Document {
@@ -38,6 +37,8 @@ export interface IShipment extends Document {
   shippingCost: string;
   latitude: number;
   longitude: number;
+  recipientLatitude: number;
+  recipientLongitude: number;
   status: string;
   createdAt: Date;
   updatedAt: Date;
@@ -81,6 +82,8 @@ const ShipmentSchema: Schema = new Schema(
     shippingCost: { type: String, required: true },
     latitude: { type: Number, required: true },
     longitude: { type: Number, required: true },
+    recipientLatitude: { type: Number },
+    recipientLongitude: { type: Number },
     status: { type: String, default: 'pending' },
   },
   { timestamps: true }
