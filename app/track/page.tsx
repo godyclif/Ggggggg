@@ -45,7 +45,7 @@ export default function TrackPage() {
           </form>
 
           <p className="text-center text-sm text-muted-foreground mt-6">
-            Tracking functionality coming soon
+            Shipment tracking is available for all orders placed through our website.
           </p>
         </div>
       </section>

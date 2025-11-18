@@ -1,6 +1,7 @@
 
 "use client";
 import { Badge } from "@/components/ui/badge";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useTheme } from "next-themes";
@@ -9,6 +10,13 @@ import Link from "next/link";
 
 export const HeroSection = () => {
   const { theme } = useTheme();
+  
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    alert("Tracking functionality coming soon");
+  };
+
 
   return (
     <section className="container w-full">
@@ -34,18 +42,17 @@ export const HeroSection = () => {
               <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
             </Button>
 
-            <Button
-              asChild
-              variant="secondary"
-              className="w-5/6 md:w-1/4 font-bold"
-            >
-              <Link
-                href="https://github.com/nobruf/shadcn-landing-page.git"
-                target="_blank"
-              >
-                Github Repository
-              </Link>
-            </Button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <Input
+                type="text"
+                placeholder="Enter tracking number"
+                
+                className="text-lg h-14"
+              />
+              <Button type="submit" size="lg" className="w-full">
+                Track Shipment
+              </Button>
+            </form>
           </div>
         </div>
 
