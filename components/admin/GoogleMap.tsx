@@ -15,6 +15,7 @@ interface MapboxMapProps {
   recipientLng?: number;
   senderLat?: number;
   senderLng?: number;
+  isEditMode?: boolean;
 }
 
 export function GoogleMap({ 
@@ -25,7 +26,8 @@ export function GoogleMap({
   recipientLat,
   recipientLng,
   senderLat,
-  senderLng
+  senderLng,
+  isEditMode = false
 }: MapboxMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
@@ -343,8 +345,8 @@ export function GoogleMap({
       onLocationChange(lngLat.lat, lngLat.lng);
       setCurrentMarkerPosition({ lng: lngLat.lng, lat: lngLat.lat });
       
-      // Draw covered distance line from original position
-      if (originalPositionRef.current && map.loaded()) {
+      // Only draw covered distance line in edit mode
+      if (isEditMode && originalPositionRef.current && map.loaded()) {
         drawCoveredDistanceLine(
           map,
           originalPositionRef.current.lng,
@@ -361,11 +363,12 @@ export function GoogleMap({
         clearTimeout(routeUpdateTimeoutRef.current);
       }
       
-      // Update route after 1 second delay
+      // Update route after 1 second delay (or immediately if not in edit mode)
       if (showRoute && recipientLat && recipientLng && map.loaded()) {
+        const delay = isEditMode ? 1000 : 0;
         routeUpdateTimeoutRef.current = setTimeout(() => {
           fetchAndDrawRoute(map, lngLat.lng, lngLat.lat, recipientLng, recipientLat);
-        }, 1000);
+        }, delay);
       }
     });
 
@@ -374,8 +377,8 @@ export function GoogleMap({
       onLocationChange(e.lngLat.lat, e.lngLat.lng);
       setCurrentMarkerPosition({ lng: e.lngLat.lng, lat: e.lngLat.lat });
       
-      // Check if marker has moved from original position
-      if (originalPositionRef.current) {
+      // Check if marker has moved from original position (only in edit mode)
+      if (isEditMode && originalPositionRef.current) {
         const distance = calculateStraightLineDistance(
           originalPositionRef.current.lng,
           originalPositionRef.current.lat,
@@ -385,8 +388,8 @@ export function GoogleMap({
         setShowUpdateOriginButton(distance > 0.1); // Show button if moved more than 100m
       }
       
-      // Draw covered distance line from original position
-      if (originalPositionRef.current && map.loaded()) {
+      // Only draw covered distance line in edit mode
+      if (isEditMode && originalPositionRef.current && map.loaded()) {
         drawCoveredDistanceLine(
           map,
           originalPositionRef.current.lng,
@@ -403,11 +406,12 @@ export function GoogleMap({
         clearTimeout(routeUpdateTimeoutRef.current);
       }
       
-      // Update route after 1 second delay
+      // Update route after 1 second delay (or immediately if not in edit mode)
       if (showRoute && recipientLat && recipientLng && map.loaded()) {
+        const delay = isEditMode ? 1000 : 0;
         routeUpdateTimeoutRef.current = setTimeout(() => {
           fetchAndDrawRoute(map, e.lngLat.lng, e.lngLat.lat, recipientLng, recipientLat);
-        }, 1000);
+        }, delay);
       }
     });
 
@@ -516,7 +520,7 @@ export function GoogleMap({
     <div className="space-y-2">
       <div className="relative w-full h-[400px] rounded-lg overflow-hidden border">
         <div ref={mapContainerRef} className="w-full h-full" />
-        {showUpdateOriginButton && (
+        {isEditMode && showUpdateOriginButton && (
           <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
             <Button onClick={handleUpdateOrigin} size="sm" className="shadow-lg">
               Set as New Origin

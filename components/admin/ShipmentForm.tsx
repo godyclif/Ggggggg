@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -51,6 +50,7 @@ interface ShipmentFormData {
 interface ShipmentFormProps {
   formData: ShipmentFormData;
   setFormData: (data: ShipmentFormData) => void;
+  isEditMode?: boolean;
 }
 
 interface AddressSuggestion {
@@ -59,7 +59,7 @@ interface AddressSuggestion {
   context?: Array<{ id: string; text: string }>;
 }
 
-export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
+export function ShipmentForm({ formData, setFormData, isEditMode }: ShipmentFormProps) {
   const [recipientSuggestions, setRecipientSuggestions] = useState<AddressSuggestion[]>([]);
   const [showRecipientSuggestions, setShowRecipientSuggestions] = useState(false);
   const [recipientLat, setRecipientLat] = useState<number | undefined>();
@@ -87,32 +87,32 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Parse address from clipboard paste
   const parseAddress = (addressText: string) => {
     const parts = addressText.split(',').map(p => p.trim());
-    
+
     if (parts.length >= 3) {
       const street = parts[0];
       const city = parts[1];
       const stateZipCountry = parts.slice(2).join(', ');
-      
+
       // Extract ZIP code (5 digits)
       const zipMatch = stateZipCountry.match(/\b\d{5}\b/);
       const zip = zipMatch ? zipMatch[0] : '';
-      
+
       // Extract state (2 letter code)
       const stateMatch = stateZipCountry.match(/\b[A-Z]{2}\b/);
       const state = stateMatch ? stateMatch[0] : '';
-      
+
       // Extract country (remaining text after state and zip)
       let country = stateZipCountry
         .replace(zip, '')
         .replace(state, '')
         .replace(/,/g, '')
         .trim();
-      
+
       if (!country) country = 'United States';
-      
+
       return { street, city, state, zip, country };
     }
-    
+
     return null;
   };
 
@@ -120,7 +120,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   const handleRecipientAddressPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedText = e.clipboardData.getData('text');
     const parsed = parseAddress(pastedText);
-    
+
     if (parsed) {
       e.preventDefault();
       setFormData({
@@ -131,7 +131,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
         recipientZip: parsed.zip,
         recipientCountry: parsed.country
       });
-      
+
       // Geocode the full address
       geocodeAddress(pastedText, 'recipient');
     }
@@ -141,7 +141,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   const handleSenderAddressPaste = (e: React.ClipboardEvent<HTMLInputElement>) => {
     const pastedText = e.clipboardData.getData('text');
     const parsed = parseAddress(pastedText);
-    
+
     if (parsed) {
       e.preventDefault();
       setFormData({
@@ -158,14 +158,14 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Autocomplete for recipient address
   const handleRecipientAddressChange = async (value: string) => {
     handleInputChange("recipientAddress", value);
-    
+
     if (value.length > 2) {
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}&autocomplete=true&limit=5`;
-      
+
       try {
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.features) {
           setRecipientSuggestions(data.features);
           setShowRecipientSuggestions(true);
@@ -181,14 +181,14 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Autocomplete for sender address
   const handleSenderAddressChange = async (value: string) => {
     handleInputChange("senderAddress", value);
-    
+
     if (value.length > 2) {
       const url = `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(value)}.json?access_token=${process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN}&autocomplete=true&limit=5`;
-      
+
       try {
         const response = await fetch(url);
         const data = await response.json();
-        
+
         if (data.features) {
           setSenderSuggestions(data.features);
           setShowSenderSuggestions(true);
@@ -204,14 +204,14 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Select address from suggestions
   const selectRecipientSuggestion = (suggestion: AddressSuggestion) => {
     const [lng, lat] = suggestion.center;
-    
+
     // Extract address components from the suggestion
     let street = suggestion.place_name.split(',')[0];
     let city = '';
     let state = '';
     let zip = '';
     let country = '';
-    
+
     if (suggestion.context) {
       suggestion.context.forEach(ctx => {
         if (ctx.id.startsWith('place')) city = ctx.text;
@@ -220,7 +220,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
         if (ctx.id.startsWith('country')) country = ctx.text;
       });
     }
-    
+
     setFormData({
       ...formData,
       recipientAddress: street,
@@ -229,7 +229,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
       recipientZip: zip,
       recipientCountry: country
     });
-    
+
     setRecipientLat(lat);
     setRecipientLng(lng);
     setShowRecipientSuggestions(false);
@@ -238,14 +238,14 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Select sender address from suggestions
   const selectSenderSuggestion = (suggestion: AddressSuggestion) => {
     const [lng, lat] = suggestion.center;
-    
+
     // Extract address components from the suggestion
     let street = suggestion.place_name.split(',')[0];
     let city = '';
     let state = '';
     let zip = '';
     let country = '';
-    
+
     if (suggestion.context) {
       suggestion.context.forEach(ctx => {
         if (ctx.id.startsWith('place')) city = ctx.text;
@@ -254,7 +254,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
         if (ctx.id.startsWith('country')) country = ctx.text;
       });
     }
-    
+
     setFormData({
       ...formData,
       senderAddress: street,
@@ -263,7 +263,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
       senderZip: zip,
       senderCountry: country
     });
-    
+
     setSenderLat(lat);
     setSenderLng(lng);
     setShowSenderSuggestions(false);
@@ -279,12 +279,15 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
 
       if (data.features && data.features.length > 0) {
         const [lng, lat] = data.features[0].center;
-        
+
         if (type === 'recipient') {
           setRecipientLat(lat);
           setRecipientLng(lng);
+        } else {
+          setSenderLat(lat);
+          setSenderLng(lng);
         }
-        
+
         return { lat, lng };
       }
     } catch (error) {
@@ -296,7 +299,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Auto-geocode recipient address when all fields are filled
   useEffect(() => {
     const { recipientAddress, recipientCity, recipientState, recipientCountry } = formData;
-    
+
     if (recipientAddress && recipientCity && recipientState && recipientCountry) {
       const fullAddress = `${recipientAddress}, ${recipientCity}, ${recipientState}, ${recipientCountry}`;
       geocodeAddress(fullAddress, 'recipient');
@@ -306,7 +309,7 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
   // Auto-geocode sender address when all fields are filled
   useEffect(() => {
     const { senderAddress, senderCity, senderState, senderCountry } = formData;
-    
+
     if (senderAddress && senderCity && senderState && senderCountry) {
       const fullAddress = `${senderAddress}, ${senderCity}, ${senderState}, ${senderCountry}`;
       geocodeAddress(fullAddress, 'sender').then(coords => {
@@ -703,15 +706,15 @@ export function ShipmentForm({ formData, setFormData }: ShipmentFormProps) {
             latitude={formData.latitude}
             longitude={formData.longitude}
             onLocationChange={handleLocationChange}
-            showRoute={recipientLat !== undefined && recipientLng !== undefined}
+            showRoute={isEditMode && recipientLat !== undefined && recipientLng !== undefined}
             recipientLat={recipientLat}
             recipientLng={recipientLng}
             senderLat={senderLat}
             senderLng={senderLng}
           />
           <p className="text-sm text-muted-foreground mt-4">
-            Click on the map or drag the blue marker to set the current shipment location. 
-            {recipientLat && recipientLng 
+            Click on the map or drag the blue marker to set the current shipment location.
+            {recipientLat && recipientLng
               ? " The route to the destination is displayed above."
               : " Enter the recipient address to see the route."}
           </p>

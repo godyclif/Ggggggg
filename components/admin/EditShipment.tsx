@@ -139,7 +139,7 @@ export function EditShipment() {
 
         {shipmentFound && (
           <>
-            <ShipmentForm formData={formData} setFormData={setFormData} />
+            <ShipmentForm formData={formData} setFormData={setFormData} isEditMode={true} />
             <Button onClick={handleUpdate} className="w-full" disabled={isSaving}>
               {isSaving ? (
                 <>

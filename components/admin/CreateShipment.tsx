@@ -140,7 +140,7 @@ export function CreateShipment({ trackingNumber, onRegenerateTracking }: CreateS
         </div>
       </CardHeader>
       <CardContent className="space-y-6">
-        <ShipmentForm formData={formData} setFormData={setFormData} />
+        <ShipmentForm formData={formData} setFormData={setFormData} isEditMode={false} />
         <Button onClick={handleSubmit} className="w-full" disabled={isLoading}>
           {isLoading ? (
             <>
