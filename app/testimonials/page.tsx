@@ -1,0 +1,30 @@
+
+"use client";
+
+import { useTranslation } from "react-i18next";
+import { Navbar } from "@/components/layout/navbar";
+import { Footer } from "@/components/layout/sections/footer";
+import { Testimonial } from "@/components/layout/sections/testimonial";
+import "../../lib/i18n";
+
+export default function TestimonialsPage() {
+  const { t } = useTranslation();
+
+  return (
+    <>
+      <Navbar />
+      <section className="container py-24 sm:py-32">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+            {t("testimonials.title")}
+          </h1>
+          <p className="text-xl text-muted-foreground">
+            {t("testimonials.subtitle")}
+          </p>
+        </div>
+        <Testimonial />
+      </section>
+      <Footer />
+    </>
+  );
+}
