@@ -48,7 +48,7 @@ export const HeroSection = () => {
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 className="text-lg h-14"
               />
-              <Button className="w-5/6 md:w-1/4 font-bold group/arrow" type="submit" >
+              <Button className="w-5/6 md:w-1/4 font-bold group/arrow bg-primary text-primary-foreground hover:bg-primary/90" type="submit" >
                 Track Shipment
                 <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
               </Button>
