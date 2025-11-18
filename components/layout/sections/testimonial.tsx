@@ -1,6 +1,4 @@
 "use client";
-
-import { useTranslation } from "react-i18next";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Card,
@@ -18,77 +16,67 @@ import {
 } from "@/components/ui/carousel";
 import { Star } from "lucide-react";
 
-interface TestimonialProps {
+interface ReviewProps {
   image: string;
   name: string;
   userName: string;
-  comment: {
-    en: string;
-    fr: string;
-  };
+  comment: string;
+  rating: number;
 }
 
-const testimonials: TestimonialProps[] = [
+const reviewList: ReviewProps[] = [
   {
-    image: "https://i.pravatar.cc/150?img=1",
-    name: "Sarah Mitchell",
-    userName: "@sarahm_imports",
-    comment: {
-      en: "We've been using RapidWave for 2 years now. Their reliability is unmatched - our shipments always arrive on time. The tracking system keeps us informed every step of the way.",
-      fr: "Nous utilisons RapidWave depuis 2 ans maintenant. Leur fiabilité est inégalée - nos envois arrivent toujours à temps. Le système de suivi nous tient informés à chaque étape."
-    }
+    image: "https://github.com/shadcn.png",
+    name: "John Doe",
+    userName: "Product Manager",
+    comment:
+      "Wow NextJs + Shadcn is awesome!. This template lets me change colors, fonts and images to match my brand identity. ",
+    rating: 5.0,
   },
   {
-    image: "https://i.pravatar.cc/150?img=12",
-    name: "Marcus Chen",
-    userName: "@mchen_logistics",
-    comment: {
-      en: "After testing several logistics companies, RapidWave stands out. Their rates are competitive and the customer service team actually responds quickly. Highly recommend for international shipping.",
-      fr: "Après avoir testé plusieurs entreprises de logistique, RapidWave se démarque. Leurs tarifs sont compétitifs et l'équipe du service client répond réellement rapidement. Hautement recommandé pour l'expédition internationale."
-    }
+    image: "https://github.com/shadcn.png",
+    name: "Sophia Collins",
+    userName: "Cybersecurity Analyst",
+    comment:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna. ",
+    rating: 4.8,
+  },
+
+  {
+    image: "https://github.com/shadcn.png",
+    name: "Adam Johnson",
+    userName: "Chief Technology Officer",
+    comment:
+      "Lorem ipsum dolor sit amet,exercitation. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.",
+    rating: 4.9,
   },
   {
-    image: "https://i.pravatar.cc/150?img=27",
-    name: "Emily Rodriguez",
-    userName: "@erod_exports",
-    comment: {
-      en: "Running an e-commerce business means I need dependable shipping. RapidWave has handled thousands of packages for us without major issues. The online portal makes managing shipments simple.",
-      fr: "Gérer une entreprise de commerce électronique signifie que j'ai besoin d'une expédition fiable. RapidWave a géré des milliers de colis pour nous sans problèmes majeurs. Le portail en ligne simplifie la gestion des envois."
-    }
+    image: "https://github.com/shadcn.png",
+    name: "Ethan Parker",
+    userName: "Data Scientist",
+    comment:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod labore et dolore magna aliqua. Ut enim ad minim veniam.",
+    rating: 5.0,
   },
   {
-    image: "https://i.pravatar.cc/150?img=33",
-    name: "David Thompson",
-    userName: "@dthompson_trade",
-    comment: {
-      en: "What impressed me most was how they handled a delayed customs clearance. The team kept me updated and resolved it professionally. That's the kind of service that builds trust.",
-      fr: "Ce qui m'a le plus impressionné, c'est la façon dont ils ont géré un dédouanement retardé. L'équipe m'a tenu au courant et l'a résolu professionnellement. C'est le genre de service qui construit la confiance."
-    }
+    image: "https://github.com/shadcn.png",
+    name: "Ava Mitchell",
+    userName: "IT Project Manager",
+    comment:
+      "Lorem ipsum dolor sit amet, tempor incididunt  aliqua. Ut enim ad minim veniam, quis nostrud incididunt consectetur adipiscing elit.",
+    rating: 5.0,
   },
   {
-    image: "https://i.pravatar.cc/150?img=44",
-    name: "Lisa Anderson",
-    userName: "@landerson_supply",
-    comment: {
-      en: "We switched to RapidWave 18 months ago and haven't looked back. Their network coverage is excellent and the pricing is transparent - no hidden fees that surprise you later.",
-      fr: "Nous sommes passés à RapidWave il y a 18 mois et nous ne sommes pas revenus en arrière. Leur couverture réseau est excellente et les prix sont transparents - pas de frais cachés qui vous surprennent plus tard."
-    }
+    image: "https://github.com/shadcn.png",
+    name: "Isabella Reed",
+    userName: "DevOps Engineer",
+    comment:
+      "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
+    rating: 4.9,
   },
-  {
-    image: "https://i.pravatar.cc/150?img=58",
-    name: "James Wilson",
-    userName: "@jwilson_freight",
-    comment: {
-      en: "As a small business owner, I appreciate that RapidWave treats us just as well as their large corporate clients. Professional service, reasonable prices, and they actually care about getting it right.",
-      fr: "En tant que propriétaire d'une petite entreprise, j'apprécie que RapidWave nous traite aussi bien que leurs grands clients corporatifs. Service professionnel, prix raisonnables, et ils se soucient vraiment de bien faire les choses."
-    }
-  }
 ];
 
 export const TestimonialSection = () => {
-  const { i18n } = useTranslation();
-  const currentLang = i18n.language as 'en' | 'fr';
-
   return (
     <section id="testimonials" className="container py-24 sm:py-32">
       <div className="text-center mb-8">
@@ -108,7 +96,7 @@ export const TestimonialSection = () => {
         className="relative w-[80%] sm:w-[90%] lg:max-w-screen-xl mx-auto"
       >
         <CarouselContent>
-          {testimonials.map((review) => (
+          {reviewList.map((review) => (
             <CarouselItem
               key={review.name}
               className="md:basis-1/2 lg:basis-1/3"
@@ -122,17 +110,17 @@ export const TestimonialSection = () => {
                     <Star className="size-4 fill-primary text-primary" />
                     <Star className="size-4 fill-primary text-primary" />
                   </div>
-                  {review.comment[currentLang]}
+                  {`"${review.comment}"`}
                 </CardContent>
 
                 <CardHeader>
                   <div className="flex flex-row items-center gap-4">
                     <Avatar>
                       <AvatarImage
-                        src={review.image}
-                        alt={review.name}
+                        src="https://avatars.githubusercontent.com/u/75042455?v=4"
+                        alt="radix"
                       />
-                      <AvatarFallback>{review.name.split(' ').map(n => n[0]).join('')}</AvatarFallback>
+                      <AvatarFallback>SV</AvatarFallback>
                     </Avatar>
 
                     <div className="flex flex-col">

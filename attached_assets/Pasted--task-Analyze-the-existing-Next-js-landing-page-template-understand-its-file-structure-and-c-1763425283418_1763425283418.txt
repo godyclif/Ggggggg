@@ -1,0 +1,83 @@
+{
+  "task": "Analyze the existing Next.js landing page template, understand its file structure and components, then transform it into a full multilingual logistics website named 'RapidWave Logistics'. Follow all best practices, avoid all errors, and keep the app stable and consistent.",
+  
+  "requirements": {
+    "initialAnalysis": {
+      "studyOriginalApp": true,
+      "followExistingStructure": true,
+      "minimizeBreakingChanges": true,
+      "ensureZeroErrors": true,
+      "ensureTypescriptSafety": true
+    },
+
+    "internationalization": {
+      "library": "i18next",
+      "languages": ["en", "fr"],
+      "features": {
+        "languageSwitcher": true,
+        "switcherLocation": "navbar",
+        "flagsIncluded": true,
+        "switcherBehavior": "Language must switch content without modifying or appending anything to the URL",
+        "routing": "No locale prefixes; language change must occur through client-side state via i18next"
+      }
+    },
+
+    "appTransformation": {
+      "currentState": "Single-page Next.js landing template",
+      "desiredState": "Full shipping, transport, and logistics website",
+      "branding": {
+        "appName": "RapidWave Logistics"
+      },
+      "bestPractices": "Follow all modern Next.js guidelines, component organization, server/client boundaries, and linting rules",
+      "errorPrevention": {
+        "avoidHydrationErrors": true,
+        "avoidUndefinedComponents": true,
+        "avoidImportMistakes": true,
+        "maintainCleanBuild": true
+      }
+    },
+
+    "pages": {
+      "requiredPages": [
+        "home",
+        "about",
+        "team",
+        "contact",
+        {
+          "track": {
+            "fields": [
+              { "input": "trackingNumber" },
+              { "button": "submitTrackingNumber" }
+            ],
+            "note": "Button should exist but have no backend functionality yet"
+          }
+        },
+        {
+          "testimonials": {
+            "minTestimonials": 4,
+            "languages": ["en", "fr"],
+            "realistic": true,
+            "naturalWriting": true,
+            "notAIGeneratedLooking": true
+          }
+        }
+      ],
+      "behavior": {
+        "replaceScrollToSections": true,
+        "enableRealPageNavigation": true,
+        "retainSmoothUIFlow": true
+      }
+    },
+
+    "contentConsistency": {
+      "companyAge": 5,
+      "instructions": "Every part of the website that references company age must say the company has been transporting for 5 years. In the About page include: 'RapidWave Logistics has been transporting goods for 5 years, and we recently launched our website to serve more customers worldwide.'"
+    },
+
+    "toneAndGoals": {
+      "primaryGoal": "Increase customer trust and credibility",
+      "style": "Professional, modern, clean, and reliable",
+      "avoid": ["AI-sounding text", "inconsistent facts", "duplicate content", "broken navigation"]
+    }
+  }
+}
