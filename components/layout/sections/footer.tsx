@@ -1,3 +1,4 @@
+"use client";
 import { Separator } from "@/components/ui/separator";
 import { ChevronsDownIcon } from "lucide-react";
 import Link from "next/link";
@@ -5,6 +6,7 @@ import { useTranslation } from "react-i18next";
 
 export const FooterSection = () => {
   const { t } = useTranslation();
+  const currentYear = new Date().getFullYear();
 
   return (
     <footer id="footer" className="container py-24 sm:py-32">
@@ -22,19 +24,19 @@ export const FooterSection = () => {
             <h3 className="font-bold text-lg">{t("footer.contact")}</h3>
             <div>
               <Link href="#" className="opacity-60 hover:opacity-100">
-                Github
+                {t("footer.github")}
               </Link>
             </div>
 
             <div>
               <Link href="#" className="opacity-60 hover:opacity-100">
-                Twitter
+                {t("footer.twitter")}
               </Link>
             </div>
 
             <div>
               <Link href="#" className="opacity-60 hover:opacity-100">
-                Instagram
+                {t("footer.instagram")}
               </Link>
             </div>
           </div>
@@ -106,7 +108,7 @@ export const FooterSection = () => {
         <Separator className="my-6" />
         <section className="">
           <h3 className="">
-            &copy; 2024 {t("footer.designed_developed_by")}
+            &copy; {currentYear} {t("footer.designed_developed_by")}
             <Link
               target="_blank"
               href="https://github.com/leoMirandaa"

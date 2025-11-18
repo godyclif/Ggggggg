@@ -2,7 +2,6 @@
 "use client";
 
 import { useTranslation } from "react-i18next";
-import { TeamSection } from "@/components/layout/sections/team";
 import { FooterSection } from "@/components/layout/sections/footer";
 
 export default function TeamPage() {
@@ -18,9 +17,11 @@ export default function TeamPage() {
           <p className="text-xl text-muted-foreground">
             {t("team.subtitle")}
           </p>
+          <p className="text-lg text-muted-foreground mt-4">
+            {t("team.description")}
+          </p>
         </div>
       </section>
-      <TeamSection />
       <FooterSection />
     </>
   );

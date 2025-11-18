@@ -26,7 +26,8 @@
   },
   "team": {
     "title": "Meet Our Team",
-    "subtitle": "The People Behind Your Shipments"
+    "subtitle": "The People Behind Your Shipments",
+    "description": "Our dedicated team of logistics professionals has been working together for 5 years to deliver exceptional service."
   },
   "track": {
     "title": "Track Your Shipment",
@@ -38,6 +39,7 @@
   "testimonials": {
     "title": "What Our Customers Say",
     "subtitle": "Real experiences from real customers",
+    "heading": "Hear What Our 1000+ Clients Say",
     "items": [
       {
         "name": "Sarah Mitchell",
@@ -87,6 +89,15 @@
   },
   "footer": {
     "tagline": "RapidWave Logistics - 5 Years of Trusted Service",
-    "rights": "All rights reserved."
+    "description": "Providing reliable global shipping solutions with excellence and care.",
+    "rights": "All rights reserved.",
+    "quick_links": "Quick Links",
+    "contact_us": "Contact Us",
+    "email": "Email",
+    "phone": "Phone",
+    "address": "Address",
+    "email_value": "info@rapidwavelogistics.com",
+    "phone_value": "+1 (555) 123-4567",
+    "address_value": "123 Logistics Avenue, Suite 100, New York, NY 10001"
   }
 }
