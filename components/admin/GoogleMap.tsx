@@ -443,40 +443,50 @@ export function GoogleMap({
   }, [latitude, longitude]);
 
   // Move marker to sender address when it's provided
+  const prevSenderCoordsRef = useRef<{ lat: number; lng: number } | null>(null);
+  
   useEffect(() => {
     if (senderLat && senderLng && markerRef.current && mapRef.current) {
-      markerRef.current.setLngLat([senderLng, senderLat]);
-      mapRef.current.setCenter([senderLng, senderLat]);
-      
-      // Only update location if not in edit mode
-      if (!isEditMode) {
-        onLocationChange(senderLat, senderLng);
-      }
-      
-      // Update original position to sender address
-      originalPositionRef.current = { lng: senderLng, lat: senderLat };
-      setShowUpdateOriginButton(false);
-      
-      // Clear covered distance when origin changes
-      setCoveredDistance("");
-      if (mapRef.current.getLayer('covered-distance')) {
-        mapRef.current.removeLayer('covered-distance');
-      }
-      if (mapRef.current.getSource('covered-distance')) {
-        mapRef.current.removeSource('covered-distance');
-      }
-      
-      // Clear the main route layer completely
-      if (mapRef.current.getLayer('route')) {
-        mapRef.current.removeLayer('route');
-      }
-      if (mapRef.current.getSource('route')) {
-        mapRef.current.removeSource('route');
-      }
-      
-      // Redraw route from new origin (works in both create and edit mode)
-      if (recipientLat && recipientLng && mapRef.current.loaded()) {
-        fetchAndDrawRoute(mapRef.current, senderLng, senderLat, recipientLng, recipientLat);
+      // Only update if sender coordinates actually changed
+      if (!prevSenderCoordsRef.current || 
+          prevSenderCoordsRef.current.lat !== senderLat || 
+          prevSenderCoordsRef.current.lng !== senderLng) {
+        
+        markerRef.current.setLngLat([senderLng, senderLat]);
+        mapRef.current.setCenter([senderLng, senderLat]);
+        
+        // Only update location if not in edit mode
+        if (!isEditMode) {
+          onLocationChange(senderLat, senderLng);
+        }
+        
+        // Update original position to sender address
+        originalPositionRef.current = { lng: senderLng, lat: senderLat };
+        setShowUpdateOriginButton(false);
+        
+        // Clear covered distance when origin changes
+        setCoveredDistance("");
+        if (mapRef.current.getLayer('covered-distance')) {
+          mapRef.current.removeLayer('covered-distance');
+        }
+        if (mapRef.current.getSource('covered-distance')) {
+          mapRef.current.removeSource('covered-distance');
+        }
+        
+        // Clear the main route layer completely
+        if (mapRef.current.getLayer('route')) {
+          mapRef.current.removeLayer('route');
+        }
+        if (mapRef.current.getSource('route')) {
+          mapRef.current.removeSource('route');
+        }
+        
+        // Redraw route from new origin (works in both create and edit mode)
+        if (recipientLat && recipientLng && mapRef.current.loaded()) {
+          fetchAndDrawRoute(mapRef.current, senderLng, senderLat, recipientLng, recipientLat);
+        }
+        
+        prevSenderCoordsRef.current = { lat: senderLat, lng: senderLng };
       }
     }
   }, [senderLat, senderLng]);
@@ -515,6 +525,7 @@ export function GoogleMap({
   const handleUpdateOrigin = () => {
     if (currentMarkerPosition && mapRef.current) {
       originalPositionRef.current = currentMarkerPosition;
+      prevSenderCoordsRef.current = currentMarkerPosition; // Update this too to prevent re-trigger
       setShowUpdateOriginButton(false);
       setCoveredDistance("");
       
