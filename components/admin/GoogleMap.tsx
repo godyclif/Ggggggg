@@ -442,7 +442,11 @@ export function GoogleMap({
     if (senderLat && senderLng && markerRef.current && mapRef.current) {
       markerRef.current.setLngLat([senderLng, senderLat]);
       mapRef.current.setCenter([senderLng, senderLat]);
-      onLocationChange(senderLat, senderLng);
+      
+      // Only update location if not in edit mode
+      if (!isEditMode) {
+        onLocationChange(senderLat, senderLng);
+      }
       
       // Update original position to sender address
       originalPositionRef.current = { lng: senderLng, lat: senderLat };
@@ -457,8 +461,8 @@ export function GoogleMap({
         mapRef.current.removeSource('covered-distance');
       }
       
-      // Redraw route from new origin
-      if (showRoute && recipientLat && recipientLng && mapRef.current.loaded()) {
+      // Redraw route from new origin (works in both create and edit mode)
+      if (recipientLat && recipientLng && mapRef.current.loaded()) {
         fetchAndDrawRoute(mapRef.current, senderLng, senderLat, recipientLng, recipientLat);
       }
     }
@@ -466,7 +470,7 @@ export function GoogleMap({
 
   // Draw route when both locations are available
   useEffect(() => {
-    if (!showRoute || !recipientLat || !recipientLng || !mapRef.current || !latitude || !longitude) {
+    if (!recipientLat || !recipientLng || !mapRef.current || !latitude || !longitude) {
       return;
     }
 
@@ -492,7 +496,7 @@ export function GoogleMap({
       });
     }
 
-  }, [showRoute, recipientLat, recipientLng, latitude, longitude]);
+  }, [recipientLat, recipientLng, latitude, longitude]);
 
   // Handle updating the origin to current marker position
   const handleUpdateOrigin = () => {
