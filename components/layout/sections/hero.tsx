@@ -1,9 +1,8 @@
-
 "use client";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Package, Globe, Zap } from "lucide-react";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 
@@ -17,85 +16,113 @@ export const HeroSection = () => {
   };
 
   const carouselImages = [
-    theme === "light" ? "/hero-image-light.jpeg" : "/hero-image-dark.jpeg",
-    theme === "light" ? "/hero-image-light.jpeg" : "/hero-image-dark.jpeg",
-    theme === "light" ? "/hero-image-light.jpeg" : "/hero-image-dark.jpeg",
+    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
+    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
+    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
   ];
 
   return (
-    <section className="relative w-full overflow-hidden min-h-[600px] md:min-h-[800px]">
-      {/* Background Carousel */}
+    <section className="relative w-full overflow-hidden min-h-[700px] md:min-h-[900px]">
+      {/* Background Carousel with Gradient Overlay */}
       <div className="absolute inset-0 z-0">
         <div className="flex animate-carousel h-full">
           {/* First set of images */}
           {carouselImages.map((src, idx) => (
-            <div key={`first-${idx}`} className="flex-shrink-0 w-screen min-h-[600px] md:min-h-[800px] relative">
+            <div key={`first-${idx}`} className="flex-shrink-0 w-screen min-h-[700px] md:min-h-[900px] relative">
               <Image
                 src={src}
                 alt={`Background ${idx + 1}`}
                 fill
-                className="object-cover opacity-20"
+                className="object-cover"
                 priority={idx === 0}
               />
             </div>
           ))}
           {/* Duplicate set for seamless loop */}
           {carouselImages.map((src, idx) => (
-            <div key={`second-${idx}`} className="flex-shrink-0 w-screen min-h-[600px] md:min-h-[800px] relative">
+            <div key={`second-${idx}`} className="flex-shrink-0 w-screen min-h-[700px] md:min-h-[900px] relative">
               <Image
                 src={src}
                 alt={`Background ${idx + 1}`}
                 fill
-                className="object-cover opacity-20"
+                className="object-cover"
                 priority={false}
               />
             </div>
           ))}
         </div>
+        {/* Enhanced gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/70 to-background/80"></div>
       </div>
 
-      {/* Gradient Overlay */}
-      <div className="absolute inset-0 z-10 bg-gradient-to-b from-background/80 via-background/60 to-background"></div>
-
       {/* Content */}
-      <div className="relative z-20 container w-full">
-        <div className="grid place-items-center lg:max-w-screen-xl gap-8 mx-auto py-20 md:py-32">
-          <div className="text-center space-y-8">
-            <div className="max-w-screen-md mx-auto text-center text-4xl md:text-6xl font-bold">
-              <h1>
-                Welcome to RapidWave Logistics
-              </h1>
+      <div className="relative z-20 container w-full h-full flex items-center">
+        <div className="w-full max-w-5xl mx-auto py-24 md:py-32 space-y-12">
+
+          {/* Main Heading with Animation */}
+          <div className="text-center space-y-6 animate-fade-in">
+            <div className="inline-block">
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary mb-6">
+                <Zap className="w-4 h-4" />
+                5 Years of Excellence
+              </span>
             </div>
 
-            <h2 className="text-2xl md:text-3xl text-transparent bg-gradient-to-r from-[#D247BF] to-primary bg-clip-text font-bold">
-              Your Trusted Partner in Global Shipping
-            </h2>
+            <h1 className="text-5xl md:text-7xl font-bold tracking-tight">
+              Welcome to{" "}
+              <span className="text-transparent bg-gradient-to-r from-[#D247BF] via-primary to-[#7c3aed] bg-clip-text">
+                RapidWave
+              </span>
+              <br />
+              Logistics
+            </h1>
 
-            <p className="max-w-screen-sm mx-auto text-xl text-muted-foreground">
-              We've been transporting goods for 5 years with reliability and excellence. Experience seamless logistics solutions tailored to your needs.
+            <p className="text-xl md:text-2xl text-muted-foreground font-light max-w-2xl mx-auto leading-relaxed">
+              Your trusted partner in global shipping solutions
             </p>
+          </div>
 
-            <div className="space-y-4 md:space-y-0 md:space-x-4">
-              <form onSubmit={handleSubmit} className="space-y-4 md:w-1/2 mx-auto mt-8">
-                <Input
-                  type="text"
-                  placeholder="Enter tracking number"
-                  value={trackingNumber}
-                  onChange={(e) => setTrackingNumber(e.target.value)}
-                  className="text-lg h-14"
-                />
-                <Button 
-                  type="submit"
-                  className="w-5/6 md:w-1/4 font-bold group/arrow"
-                >
-                  Track Shipment
-                  <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
-                </Button>
-              </form>
+          {/* Tracking Form */}
+          <div className="max-w-2xl mx-auto">
+            <form onSubmit={handleSubmit} className="flex flex-col md:flex-row gap-3 p-2 bg-background/80 backdrop-blur-md rounded-2xl shadow-2xl border border-border/50">
+              <Input
+                type="text"
+                placeholder="Enter your tracking number..."
+                value={trackingNumber}
+                onChange={(e) => setTrackingNumber(e.target.value)}
+                className="flex-1 h-14 text-lg border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 px-6"
+              />
+              <Button 
+                
+                size="lg"
+                className="h-14 px-8 font-semibold group/arrow rounded-xl shadow-lg hover:shadow-xl transition-all"
+              >
+                Track Shipment
+                <ArrowRight className="w-5 h-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
+              </Button>
+            </form>
+          </div>
+
+          {/* Feature Pills */}
+          <div className="flex flex-wrap justify-center gap-4 md:gap-6 pt-8">
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 shadow-lg hover:shadow-xl transition-shadow">
+              <Globe className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium">Global Coverage</span>
+            </div>
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 shadow-lg hover:shadow-xl transition-shadow">
+              <Package className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium">Secure Handling</span>
+            </div>
+            <div className="flex items-center gap-2 px-6 py-3 rounded-full bg-background/60 backdrop-blur-sm border border-border/50 shadow-lg hover:shadow-xl transition-shadow">
+              <Zap className="w-5 h-5 text-primary" />
+              <span className="text-sm font-medium">Fast Delivery</span>
             </div>
           </div>
         </div>
       </div>
+
+      {/* Decorative Elements */}
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-background to-transparent z-10"></div>
     </section>
   );
 };
