@@ -11,6 +11,7 @@ import { FooterSection } from "@/components/layout/sections/footer";
 import { Package, Loader2, MapPin, Calendar, DollarSign, Box, Weight, Ruler, User, Mail, Phone, Home, Shield, FileText, Download } from "lucide-react";
 import { RouteMap } from "@/components/admin/RouteMap";
 import toast from "react-hot-toast";
+import { jsPDF } from "jspdf";
 
 interface ShipmentData {
   trackingNumber: string;
@@ -102,117 +103,236 @@ export default function TrackPage() {
   const downloadShipmentLabel = () => {
     if (!shipment) return;
 
-    // Create PDF content
-    const content = `
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="utf-8">
-        <title>Shipping Label - ${shipment.trackingNumber}</title>
-        <style>
-          * { margin: 0; padding: 0; box-sizing: border-box; }
-          body { font-family: 'Arial', sans-serif; padding: 40px; background: #fff; }
-          .container { max-width: 800px; margin: 0 auto; border: 2px solid #000; padding: 30px; }
-          .header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
-          .logo { font-size: 32px; font-weight: bold; color: #7c3aed; margin-bottom: 10px; }
-          .tracking { font-size: 24px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; }
-          .barcode { text-align: center; margin: 20px 0; padding: 20px; background: #f5f5f5; }
-          .barcode-number { font-size: 18px; font-weight: bold; letter-spacing: 3px; }
-          .section { margin: 25px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
-          .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #7c3aed; }
-          .info-row { display: flex; margin-bottom: 10px; }
-          .info-label { font-weight: bold; width: 150px; }
-          .info-value { flex: 1; }
-          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-          .priority-badge { display: inline-block; padding: 5px 15px; background: #7c3aed; color: white; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
-          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #000; text-align: center; font-size: 12px; color: #666; }
-        </style>
-      </head>
-      <body>
-        <div class="container">
-          <div class="header">
-            <div class="logo">RapidWave Logistics</div>
-            <div style="font-size: 14px; color: #666;">Global Shipping Solutions</div>
-            <div class="tracking">TRACKING: ${shipment.trackingNumber}</div>
-          </div>
+    const doc = new jsPDF({
+      orientation: 'portrait',
+      unit: 'mm',
+      format: 'a4'
+    });
 
-          <div class="barcode">
-            <div style="font-size: 48px; font-weight: bold;">||||| ||||| |||||</div>
-            <div class="barcode-number">${shipment.trackingNumber}</div>
-          </div>
+    const primaryColor = [124, 58, 237]; // #7c3aed
+    const darkGray = [51, 51, 51];
+    const lightGray = [128, 128, 128];
+    const pageWidth = doc.internal.pageSize.getWidth();
+    let yPos = 15;
 
-          <div class="grid">
-            <div class="section">
-              <div class="section-title">FROM</div>
-              <div class="info-row"><div class="info-label">Name:</div><div class="info-value">${shipment.senderName}</div></div>
-              <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${shipment.senderEmail}</div></div>
-              <div class="info-row"><div class="info-label">Phone:</div><div class="info-value">${shipment.senderPhone}</div></div>
-              <div class="info-row"><div class="info-label">Address:</div><div class="info-value">${shipment.senderAddress}</div></div>
-              <div class="info-row"><div class="info-value">${shipment.senderCity}, ${shipment.senderState} ${shipment.senderZip}</div></div>
-              <div class="info-row"><div class="info-value">${shipment.senderCountry}</div></div>
-            </div>
+    // Header with border
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.rect(10, 10, pageWidth - 20, 40);
 
-            <div class="section">
-              <div class="section-title">TO</div>
-              <div class="info-row"><div class="info-label">Name:</div><div class="info-value">${shipment.recipientName}</div></div>
-              <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${shipment.recipientEmail}</div></div>
-              <div class="info-row"><div class="info-label">Phone:</div><div class="info-value">${shipment.recipientPhone}</div></div>
-              <div class="info-row"><div class="info-label">Address:</div><div class="info-value">${shipment.recipientAddress}</div></div>
-              <div class="info-row"><div class="info-value">${shipment.recipientCity}, ${shipment.recipientState} ${shipment.recipientZip}</div></div>
-              <div class="info-row"><div class="info-value">${shipment.recipientCountry}</div></div>
-            </div>
-          </div>
+    // Logo and company name
+    doc.setFontSize(24);
+    doc.setTextColor(...primaryColor);
+    doc.setFont('helvetica', 'bold');
+    doc.text('RapidWave Logistics', pageWidth / 2, yPos + 5, { align: 'center' });
 
-          <div class="section">
-            <div class="section-title">PACKAGE DETAILS</div>
-            <div class="grid">
-              <div>
-                <div class="info-row"><div class="info-label">Type:</div><div class="info-value">${shipment.packageType.toUpperCase()}</div></div>
-                <div class="info-row"><div class="info-label">Weight:</div><div class="info-value">${shipment.weight}</div></div>
-                <div class="info-row"><div class="info-label">Dimensions:</div><div class="info-value">${shipment.dimensions.length} × ${shipment.dimensions.width} × ${shipment.dimensions.height}</div></div>
-                <div class="info-row"><div class="info-label">Value:</div><div class="info-value">$${shipment.value}</div></div>
-              </div>
-              <div>
-                <div class="info-row"><div class="info-label">Service:</div><div class="info-value">${shipment.serviceType.toUpperCase()}</div></div>
-                <div class="info-row"><div class="info-label">Priority:</div><div class="info-value"><span class="priority-badge">${shipment.priority}</span></div></div>
-                <div class="info-row"><div class="info-label">Ship Date:</div><div class="info-value">${shipment.shippingDate}</div></div>
-                <div class="info-row"><div class="info-label">Est. Delivery:</div><div class="info-value">${shipment.estimatedDeliveryDate}</div></div>
-              </div>
-            </div>
-            ${shipment.description ? `<div class="info-row" style="margin-top: 15px;"><div class="info-label">Description:</div><div class="info-value">${shipment.description}</div></div>` : ''}
-            ${shipment.specialInstructions ? `<div class="info-row"><div class="info-label">Instructions:</div><div class="info-value">${shipment.specialInstructions}</div></div>` : ''}
-          </div>
+    doc.setFontSize(10);
+    doc.setTextColor(...lightGray);
+    doc.setFont('helvetica', 'normal');
+    doc.text('Global Shipping Solutions', pageWidth / 2, yPos + 12, { align: 'center' });
 
-          <div class="section">
-            <div class="section-title">ADDITIONAL SERVICES</div>
-            <div class="info-row">
-              ${shipment.insurance ? '✓ Insurance Coverage' : ''}
-              ${shipment.signatureRequired ? ' | ✓ Signature Required' : ''}
-            </div>
-          </div>
+    // Tracking number
+    doc.setFontSize(16);
+    doc.setTextColor(...darkGray);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`TRACKING: ${shipment.trackingNumber}`, pageWidth / 2, yPos + 20, { align: 'center' });
 
-          <div class="footer">
-            <div style="font-weight: bold; margin-bottom: 5px;">RapidWave Logistics</div>
-            <div>For support, contact us at support@rapidwave.com | 1-800-RAPIDWAVE</div>
-            <div style="margin-top: 10px;">This is an official shipping label. Please keep for your records.</div>
-          </div>
-        </div>
-      </body>
-      </html>
-    `;
+    // Barcode representation
+    yPos = 55;
+    doc.setFillColor(245, 245, 245);
+    doc.rect(15, yPos, pageWidth - 30, 25, 'F');
+    doc.setFontSize(32);
+    doc.setFont('helvetica', 'bold');
+    doc.text('||||| ||||| |||||', pageWidth / 2, yPos + 12, { align: 'center' });
+    doc.setFontSize(11);
+    doc.text(shipment.trackingNumber, pageWidth / 2, yPos + 20, { align: 'center' });
 
-    // Create blob and download
-    const blob = new Blob([content], { type: 'text/html' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `shipping-label-${shipment.trackingNumber}.html`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
+    // Sender and Recipient sections side by side
+    yPos = 85;
+    const colWidth = (pageWidth - 25) / 2;
     
-    toast.success("Shipping label downloaded! Open in browser and print to PDF.");
+    // Sender section
+    doc.setFillColor(124, 58, 237);
+    doc.rect(10, yPos, colWidth, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('FROM', 15, yPos + 5.5);
+
+    yPos += 12;
+    doc.setTextColor(...darkGray);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(shipment.senderName, 15, yPos);
+    yPos += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(shipment.senderEmail, 15, yPos);
+    yPos += 5;
+    doc.text(shipment.senderPhone, 15, yPos);
+    yPos += 5;
+    doc.text(shipment.senderAddress, 15, yPos);
+    yPos += 5;
+    doc.text(`${shipment.senderCity}, ${shipment.senderState} ${shipment.senderZip}`, 15, yPos);
+    yPos += 5;
+    doc.text(shipment.senderCountry, 15, yPos);
+
+    // Recipient section
+    yPos = 85;
+    doc.setFillColor(124, 58, 237);
+    doc.rect(10 + colWidth + 5, yPos, colWidth, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('TO', 15 + colWidth + 5, yPos + 5.5);
+
+    yPos += 12;
+    doc.setTextColor(...darkGray);
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.text(shipment.recipientName, 15 + colWidth + 5, yPos);
+    yPos += 5;
+    doc.setFont('helvetica', 'normal');
+    doc.setFontSize(9);
+    doc.text(shipment.recipientEmail, 15 + colWidth + 5, yPos);
+    yPos += 5;
+    doc.text(shipment.recipientPhone, 15 + colWidth + 5, yPos);
+    yPos += 5;
+    doc.text(shipment.recipientAddress, 15 + colWidth + 5, yPos);
+    yPos += 5;
+    doc.text(`${shipment.recipientCity}, ${shipment.recipientState} ${shipment.recipientZip}`, 15 + colWidth + 5, yPos);
+    yPos += 5;
+    doc.text(shipment.recipientCountry, 15 + colWidth + 5, yPos);
+
+    // Package Details section
+    yPos = 140;
+    doc.setFillColor(124, 58, 237);
+    doc.rect(10, yPos, pageWidth - 20, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('PACKAGE DETAILS', 15, yPos + 5.5);
+
+    yPos += 12;
+    doc.setTextColor(...darkGray);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'bold');
+    
+    // Package details in grid
+    const detailsLeft = 15;
+    const detailsRight = pageWidth / 2 + 5;
+    
+    doc.text('Type:', detailsLeft, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(shipment.packageType.toUpperCase(), detailsLeft + 25, yPos);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Service:', detailsRight, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(shipment.serviceType.toUpperCase(), detailsRight + 25, yPos);
+    
+    yPos += 6;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Weight:', detailsLeft, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(shipment.weight, detailsLeft + 25, yPos);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Priority:', detailsRight, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...primaryColor);
+    doc.setFont('helvetica', 'bold');
+    doc.text(shipment.priority.toUpperCase(), detailsRight + 25, yPos);
+    
+    yPos += 6;
+    doc.setTextColor(...darkGray);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Dimensions:', detailsLeft, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`${shipment.dimensions.length} × ${shipment.dimensions.width} × ${shipment.dimensions.height}`, detailsLeft + 25, yPos);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Ship Date:', detailsRight, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(shipment.shippingDate, detailsRight + 25, yPos);
+    
+    yPos += 6;
+    doc.setFont('helvetica', 'bold');
+    doc.text('Value:', detailsLeft, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`$${shipment.value}`, detailsLeft + 25, yPos);
+    
+    doc.setFont('helvetica', 'bold');
+    doc.text('Est. Delivery:', detailsRight, yPos);
+    doc.setFont('helvetica', 'normal');
+    doc.text(shipment.estimatedDeliveryDate, detailsRight + 25, yPos);
+
+    if (shipment.description) {
+      yPos += 8;
+      doc.setFont('helvetica', 'bold');
+      doc.text('Description:', detailsLeft, yPos);
+      doc.setFont('helvetica', 'normal');
+      const descLines = doc.splitTextToSize(shipment.description, pageWidth - 50);
+      doc.text(descLines, detailsLeft + 25, yPos);
+      yPos += descLines.length * 5;
+    }
+
+    if (shipment.specialInstructions) {
+      yPos += 5;
+      doc.setFont('helvetica', 'bold');
+      doc.text('Special Instructions:', detailsLeft, yPos);
+      doc.setFont('helvetica', 'normal');
+      const instrLines = doc.splitTextToSize(shipment.specialInstructions, pageWidth - 50);
+      doc.text(instrLines, detailsLeft + 25, yPos);
+      yPos += instrLines.length * 5;
+    }
+
+    // Additional Services
+    yPos += 8;
+    doc.setFillColor(124, 58, 237);
+    doc.rect(10, yPos, pageWidth - 20, 8, 'F');
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ADDITIONAL SERVICES', 15, yPos + 5.5);
+
+    yPos += 12;
+    doc.setTextColor(...darkGray);
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'normal');
+    const services = [];
+    if (shipment.insurance) services.push('✓ Insurance Coverage');
+    if (shipment.signatureRequired) services.push('✓ Signature Required');
+    if (services.length > 0) {
+      doc.text(services.join('  |  '), 15, yPos);
+    } else {
+      doc.text('No additional services', 15, yPos);
+    }
+
+    // Footer
+    yPos = doc.internal.pageSize.getHeight() - 25;
+    doc.setDrawColor(0, 0, 0);
+    doc.setLineWidth(0.5);
+    doc.line(10, yPos, pageWidth - 10, yPos);
+    
+    yPos += 5;
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'bold');
+    doc.setTextColor(...darkGray);
+    doc.text('RapidWave Logistics', pageWidth / 2, yPos, { align: 'center' });
+    
+    yPos += 5;
+    doc.setFontSize(8);
+    doc.setFont('helvetica', 'normal');
+    doc.setTextColor(...lightGray);
+    doc.text('For support, contact us at support@rapidwave.com | 1-800-RAPIDWAVE', pageWidth / 2, yPos, { align: 'center' });
+    
+    yPos += 4;
+    doc.text('This is an official shipping label. Please keep for your records.', pageWidth / 2, yPos, { align: 'center' });
+
+    // Save the PDF
+    doc.save(`shipping-label-${shipment.trackingNumber}.pdf`);
+    toast.success("Shipping label PDF downloaded successfully!");
   };
 
   const getStatusColor = (status: string) => {
