@@ -51,21 +51,62 @@ export async function PUT(
 
     const data = await req.json();
 
-    // Validate the data
-    const validatedData = shipmentValidationSchema.parse(data);
-
-    const shipment = await Shipment.findOneAndUpdate(
-      { trackingNumber: params.trackingNumber },
-      validatedData,
-      { new: true }
-    );
-
-    if (!shipment) {
+    // Get current shipment to check status change
+    const currentShipment = await Shipment.findOne({ trackingNumber: params.trackingNumber });
+    
+    if (!currentShipment) {
       return NextResponse.json(
         { error: 'Shipment not found' },
         { status: 404 }
       );
     }
+
+    // Prepare update data
+    const updateData: any = { ...data };
+
+    // If status or location changed, add to history
+    if (data.status && data.status !== currentShipment.status) {
+      const getIconForStatus = (status: string) => {
+        const iconMap: Record<string, string> = {
+          'pending': 'clock',
+          'in-transit': 'truck',
+          'out-for-delivery': 'mappin',
+          'delivered': 'check',
+          'cancelled': 'x',
+          'processing': 'package'
+        };
+        return iconMap[status.toLowerCase()] || 'clock';
+      };
+
+      const getDescriptionForStatus = (status: string) => {
+        const descMap: Record<string, string> = {
+          'pending': 'Awaiting processing',
+          'in-transit': 'Package is on the way',
+          'out-for-delivery': 'Out for delivery to recipient',
+          'delivered': 'Successfully delivered',
+          'cancelled': 'Shipment cancelled',
+          'processing': 'Being processed at facility'
+        };
+        return descMap[status.toLowerCase()] || 'Status updated';
+      };
+
+      const newHistoryEntry = {
+        status: data.status,
+        location: data.recipientCity ? `${data.recipientCity}, ${data.recipientState}` : currentShipment.recipientCity + ', ' + currentShipment.recipientState,
+        description: getDescriptionForStatus(data.status),
+        timestamp: new Date(),
+        icon: getIconForStatus(data.status)
+      };
+
+      // Append to history array
+      updateData.$push = { history: newHistoryEntry };
+    }
+
+    const shipment = await Shipment.findOneAndUpdate(
+      { trackingNumber: params.trackingNumber },
+      updateData,
+      { new: true }
+    );
 
     return NextResponse.json({ success: true, shipment });
   } catch (error: any) {

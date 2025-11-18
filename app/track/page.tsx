@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import { FooterSection } from "@/components/layout/sections/footer";
 import { Package, Loader2, MapPin, Calendar, DollarSign, Box, Weight, Ruler, User, Mail, Phone, Home, Shield, FileText, Download } from "lucide-react";
 import { RouteMap } from "@/components/admin/RouteMap";
+import { ShipmentTimeline } from "@/components/admin/ShipmentTimeline";
 import toast from "react-hot-toast";
 import { jsPDF } from "jspdf";
 
@@ -53,6 +54,13 @@ interface ShipmentData {
   recipientLatitude?: number;
   recipientLongitude?: number;
   status: string;
+  history?: Array<{
+    status: string;
+    location: string;
+    description: string;
+    timestamp: Date | string;
+    icon: string;
+  }>;
   createdAt: string;
   updatedAt: string;
 }
@@ -508,6 +516,9 @@ export default function TrackPage() {
                   </CardContent>
                 </Card>
               )}
+
+              {/* Timeline */}
+              <ShipmentTimeline history={shipment.history || []} />
 
               {/* Shipment Details */}
               <div className="grid md:grid-cols-2 gap-6">

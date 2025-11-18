@@ -40,6 +40,13 @@ export interface IShipment extends Document {
   recipientLatitude: number;
   recipientLongitude: number;
   status: string;
+  history: Array<{
+    status: string;
+    location: string;
+    description: string;
+    timestamp: Date;
+    icon: string;
+  }>;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -85,6 +92,13 @@ const ShipmentSchema: Schema = new Schema(
     recipientLatitude: { type: Number },
     recipientLongitude: { type: Number },
     status: { type: String, default: 'pending' },
+    history: [{
+      status: { type: String, required: true },
+      location: { type: String, required: true },
+      description: { type: String, required: true },
+      timestamp: { type: Date, required: true },
+      icon: { type: String, required: true }
+    }]
   },
   { timestamps: true }
 );
