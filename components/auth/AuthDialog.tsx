@@ -1,7 +1,8 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -22,6 +23,8 @@ interface AuthDialogProps {
 }
 
 export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const [isSignIn, setIsSignIn] = useState(true);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,8 +33,16 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
 
   const { signin, signup } = useAuth();
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  useEffect(() => {
+    const mode = searchParams.get("auth");
+    if (mode === "signup") {
+      setIsSignIn(false);
+    } else if (mode === "signin") {
+      setIsSignIn(true);
+    }
+  }, [searchParams]);
+
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
@@ -42,6 +53,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
         await signup(name, email, password);
         toast.success("Account created successfully! Welcome aboard.");
       }
+      router.push("/");
       onClose();
       setName("");
       setEmail("");
@@ -54,10 +66,12 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
   };
 
   const toggleMode = () => {
-    setIsSignIn(!isSignIn);
+    const newMode = !isSignIn;
+    setIsSignIn(newMode);
     setName("");
     setEmail("");
     setPassword("");
+    router.push(newMode ? "/?auth=signin" : "/?auth=signup");
   };
 
   return (
@@ -76,7 +90,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           </DialogHeader>
         </div>
 
-        <form onSubmit={handleSubmit} className="px-8 pb-8 space-y-5">
+        <div className="px-8 pb-8 space-y-5">
           {!isSignIn && (
             <div className="space-y-2">
               <Label htmlFor="name" className="text-sm font-medium">
@@ -90,7 +104,6 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
                   placeholder="John Doe"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  required
                   className="pl-10 h-11"
                 />
               </div>
@@ -109,7 +122,6 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
                 placeholder="you@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                required
                 className="pl-10 h-11"
               />
             </div>
@@ -127,7 +139,6 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
                 placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                required
                 minLength={6}
                 className="pl-10 h-11"
               />
@@ -140,7 +151,7 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           </div>
 
           <Button 
-            type="submit" 
+            onClick={handleSubmit}
             className="w-full h-11 text-base font-medium" 
             disabled={isLoading}
           >
@@ -166,14 +177,13 @@ export function AuthDialog({ isOpen, onClose }: AuthDialogProps) {
           </div>
 
           <Button
-            type="button"
             onClick={toggleMode}
             variant="outline"
             className="w-full h-11 text-base font-medium"
           >
             {isSignIn ? "Create an Account" : "Sign In Instead"}
           </Button>
-        </form>
+        </div>
       </DialogContent>
     </Dialog>
   );

@@ -6,6 +6,8 @@ import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuList,
+  NavigationMenuLink,
+  navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import {
   Sheet,
@@ -81,7 +83,7 @@ export const Navbar = () => {
                     ))}
                     {user?.role === "admin" && (
                       <Link
-                        href="/admin/dashboard"
+                        href="/admin-dashboard"
                         onClick={() => setIsOpen(false)}
                         className={buttonVariants({ variant: "ghost" })}
                       >
@@ -96,7 +98,11 @@ export const Navbar = () => {
                             Sign Out
                           </Button>
                         ) : (
-                          <Button onClick={() => setShowAuthDialog(true)} variant="ghost">
+                          <Button onClick={() => {
+                            window.history.pushState({}, '', '/?auth=signin');
+                            setShowAuthDialog(true);
+                            setIsOpen(false);
+                          }} variant="default">
                             Sign In
                           </Button>
                         )}
@@ -121,14 +127,13 @@ export const Navbar = () => {
                 </Link>
               ))}
               {user?.role === "admin" && (
-                <Link
-                  href="/admin/dashboard"
-                  className={`text-[17px] ${buttonVariants({
-                    variant: "default",
-                  })}`}
-                >
-                  Dashboard
-                </Link>
+                <NavigationMenuItem>
+                  <Link href="/admin-dashboard" legacyBehavior passHref>
+                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                      Dashboard
+                    </NavigationMenuLink>
+                  </Link>
+                </NavigationMenuItem>
               )}
             </nav>
 
@@ -146,7 +151,10 @@ export const Navbar = () => {
                       </Button>
                     </div>
                   ) : (
-                    <Button onClick={() => setShowAuthDialog(true)} variant="default" size="sm">
+                    <Button onClick={() => {
+                      window.history.pushState({}, '', '/?auth=signin');
+                      setShowAuthDialog(true);
+                    }} variant="default" size="sm">
                       Sign In
                     </Button>
                   )}
