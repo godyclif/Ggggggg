@@ -304,7 +304,7 @@ export function GoogleMap({
   };
 
   useEffect(() => {
-    if (!mapContainerRef.current) return;
+    if (!mapContainerRef.current || mapRef.current) return;
 
     mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN || "";
 
@@ -424,13 +424,17 @@ export function GoogleMap({
     markerRef.current = marker;
     
     // Store the original position
-    originalPositionRef.current = { lng: longitude || -74.0060, lat: latitude || 40.7128 };
+    if (!originalPositionRef.current) {
+      originalPositionRef.current = { lng: longitude || -74.0060, lat: latitude || 40.7128 };
+    }
 
     return () => {
       if (routeUpdateTimeoutRef.current) {
         clearTimeout(routeUpdateTimeoutRef.current);
       }
       map.remove();
+      mapRef.current = null;
+      markerRef.current = null;
     };
   }, []);
 
