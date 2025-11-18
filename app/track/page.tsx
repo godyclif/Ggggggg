@@ -10,8 +10,7 @@ import { Package } from "lucide-react";
 export default function TrackPage() {
   const [trackingNumber, setTrackingNumber] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     alert("Tracking functionality coming soon");
   };
 
@@ -39,7 +38,7 @@ export default function TrackPage() {
               onChange={(e) => setTrackingNumber(e.target.value)}
               className="text-lg h-14"
             />
-            <Button type="submit" size="lg" className="w-full opacity-100">
+            <Button onClick={handleSubmit} size="lg" className="w-full opacity-100">
               Track Shipment
             </Button>
           </form>

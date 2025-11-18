@@ -13,8 +13,7 @@ export const HeroSection = () => {
   const { theme } = useTheme();
   const [trackingNumber, setTrackingNumber] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     alert("Tracking functionality coming soon");
   };
 
@@ -37,8 +36,8 @@ export const HeroSection = () => {
             We've been transporting goods for 5 years with reliability and excellence. Experience seamless logistics solutions tailored to your needs.
           </p>
 
-            <div className="space-y-4">
-            
+          <div className="space-y-4 md:space-y-0 md:space-x-4">
+
 
             <form onSubmit={handleSubmit} className="space-y-4 md:w-1/2 mx-auto mt-8">
               <Input
@@ -48,7 +47,10 @@ export const HeroSection = () => {
                 onChange={(e) => setTrackingNumber(e.target.value)}
                 className="text-lg h-14"
               />
-              <Button className="w-5/6 md:w-1/4 font-bold group/arrow bg-primary text-primary-foreground hover:bg-primary/90" type="submit" >
+              <Button 
+                onClick={handleSubmit}
+                className="w-5/6 md:w-1/4 font-bold group/arrow"
+              >
                 Track Shipment
                 <ArrowRight className="size-5 ml-2 group-hover/arrow:translate-x-1 transition-transform" />
               </Button>
