@@ -1,13 +1,14 @@
 
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { FooterSection } from "@/components/layout/sections/footer";
-import { Package, Loader2, MapPin, Calendar, DollarSign, Box, Weight, Ruler, User, Mail, Phone, Home, Shield, FileText } from "lucide-react";
+import { Package, Loader2, MapPin, Calendar, DollarSign, Box, Weight, Ruler, User, Mail, Phone, Home, Shield, FileText, Download } from "lucide-react";
 import { RouteMap } from "@/components/admin/RouteMap";
 import toast from "react-hot-toast";
 
@@ -56,19 +57,28 @@ interface ShipmentData {
 }
 
 export default function TrackPage() {
+  const searchParams = useSearchParams();
   const [trackingNumber, setTrackingNumber] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [shipment, setShipment] = useState<ShipmentData | null>(null);
 
-  const handleTrack = async () => {
-    if (!trackingNumber.trim()) {
+  useEffect(() => {
+    const tn = searchParams.get('tn');
+    if (tn) {
+      setTrackingNumber(tn);
+      handleTrackWithNumber(tn);
+    }
+  }, [searchParams]);
+
+  const handleTrackWithNumber = async (tn: string) => {
+    if (!tn.trim()) {
       toast.error("Please enter a tracking number");
       return;
     }
 
     setIsLoading(true);
     try {
-      const response = await fetch(`/api/shipments/${trackingNumber.trim()}`);
+      const response = await fetch(`/api/shipments/${tn.trim()}`);
       const data = await response.json();
 
       if (!response.ok) {
@@ -83,6 +93,126 @@ export default function TrackPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleTrack = async () => {
+    await handleTrackWithNumber(trackingNumber);
+  };
+
+  const downloadShipmentLabel = () => {
+    if (!shipment) return;
+
+    // Create PDF content
+    const content = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <title>Shipping Label - ${shipment.trackingNumber}</title>
+        <style>
+          * { margin: 0; padding: 0; box-sizing: border-box; }
+          body { font-family: 'Arial', sans-serif; padding: 40px; background: #fff; }
+          .container { max-width: 800px; margin: 0 auto; border: 2px solid #000; padding: 30px; }
+          .header { text-align: center; border-bottom: 3px solid #000; padding-bottom: 20px; margin-bottom: 30px; }
+          .logo { font-size: 32px; font-weight: bold; color: #7c3aed; margin-bottom: 10px; }
+          .tracking { font-size: 24px; font-weight: bold; margin-top: 15px; letter-spacing: 2px; }
+          .barcode { text-align: center; margin: 20px 0; padding: 20px; background: #f5f5f5; }
+          .barcode-number { font-size: 18px; font-weight: bold; letter-spacing: 3px; }
+          .section { margin: 25px 0; padding: 20px; border: 1px solid #ddd; border-radius: 8px; }
+          .section-title { font-size: 18px; font-weight: bold; margin-bottom: 15px; color: #7c3aed; }
+          .info-row { display: flex; margin-bottom: 10px; }
+          .info-label { font-weight: bold; width: 150px; }
+          .info-value { flex: 1; }
+          .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+          .priority-badge { display: inline-block; padding: 5px 15px; background: #7c3aed; color: white; border-radius: 4px; font-weight: bold; text-transform: uppercase; }
+          .footer { margin-top: 30px; padding-top: 20px; border-top: 2px solid #000; text-align: center; font-size: 12px; color: #666; }
+        </style>
+      </head>
+      <body>
+        <div class="container">
+          <div class="header">
+            <div class="logo">RapidWave Logistics</div>
+            <div style="font-size: 14px; color: #666;">Global Shipping Solutions</div>
+            <div class="tracking">TRACKING: ${shipment.trackingNumber}</div>
+          </div>
+
+          <div class="barcode">
+            <div style="font-size: 48px; font-weight: bold;">||||| ||||| |||||</div>
+            <div class="barcode-number">${shipment.trackingNumber}</div>
+          </div>
+
+          <div class="grid">
+            <div class="section">
+              <div class="section-title">FROM</div>
+              <div class="info-row"><div class="info-label">Name:</div><div class="info-value">${shipment.senderName}</div></div>
+              <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${shipment.senderEmail}</div></div>
+              <div class="info-row"><div class="info-label">Phone:</div><div class="info-value">${shipment.senderPhone}</div></div>
+              <div class="info-row"><div class="info-label">Address:</div><div class="info-value">${shipment.senderAddress}</div></div>
+              <div class="info-row"><div class="info-value">${shipment.senderCity}, ${shipment.senderState} ${shipment.senderZip}</div></div>
+              <div class="info-row"><div class="info-value">${shipment.senderCountry}</div></div>
+            </div>
+
+            <div class="section">
+              <div class="section-title">TO</div>
+              <div class="info-row"><div class="info-label">Name:</div><div class="info-value">${shipment.recipientName}</div></div>
+              <div class="info-row"><div class="info-label">Email:</div><div class="info-value">${shipment.recipientEmail}</div></div>
+              <div class="info-row"><div class="info-label">Phone:</div><div class="info-value">${shipment.recipientPhone}</div></div>
+              <div class="info-row"><div class="info-label">Address:</div><div class="info-value">${shipment.recipientAddress}</div></div>
+              <div class="info-row"><div class="info-value">${shipment.recipientCity}, ${shipment.recipientState} ${shipment.recipientZip}</div></div>
+              <div class="info-row"><div class="info-value">${shipment.recipientCountry}</div></div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">PACKAGE DETAILS</div>
+            <div class="grid">
+              <div>
+                <div class="info-row"><div class="info-label">Type:</div><div class="info-value">${shipment.packageType.toUpperCase()}</div></div>
+                <div class="info-row"><div class="info-label">Weight:</div><div class="info-value">${shipment.weight}</div></div>
+                <div class="info-row"><div class="info-label">Dimensions:</div><div class="info-value">${shipment.dimensions.length} × ${shipment.dimensions.width} × ${shipment.dimensions.height}</div></div>
+                <div class="info-row"><div class="info-label">Value:</div><div class="info-value">$${shipment.value}</div></div>
+              </div>
+              <div>
+                <div class="info-row"><div class="info-label">Service:</div><div class="info-value">${shipment.serviceType.toUpperCase()}</div></div>
+                <div class="info-row"><div class="info-label">Priority:</div><div class="info-value"><span class="priority-badge">${shipment.priority}</span></div></div>
+                <div class="info-row"><div class="info-label">Ship Date:</div><div class="info-value">${shipment.shippingDate}</div></div>
+                <div class="info-row"><div class="info-label">Est. Delivery:</div><div class="info-value">${shipment.estimatedDeliveryDate}</div></div>
+              </div>
+            </div>
+            ${shipment.description ? `<div class="info-row" style="margin-top: 15px;"><div class="info-label">Description:</div><div class="info-value">${shipment.description}</div></div>` : ''}
+            ${shipment.specialInstructions ? `<div class="info-row"><div class="info-label">Instructions:</div><div class="info-value">${shipment.specialInstructions}</div></div>` : ''}
+          </div>
+
+          <div class="section">
+            <div class="section-title">ADDITIONAL SERVICES</div>
+            <div class="info-row">
+              ${shipment.insurance ? '✓ Insurance Coverage' : ''}
+              ${shipment.signatureRequired ? ' | ✓ Signature Required' : ''}
+            </div>
+          </div>
+
+          <div class="footer">
+            <div style="font-weight: bold; margin-bottom: 5px;">RapidWave Logistics</div>
+            <div>For support, contact us at support@rapidwave.com | 1-800-RAPIDWAVE</div>
+            <div style="margin-top: 10px;">This is an official shipping label. Please keep for your records.</div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    // Create blob and download
+    const blob = new Blob([content], { type: 'text/html' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `shipping-label-${shipment.trackingNumber}.html`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    
+    toast.success("Shipping label downloaded! Open in browser and print to PDF.");
   };
 
   const getStatusColor = (status: string) => {
@@ -153,9 +283,19 @@ export default function TrackPage() {
                         Created on {new Date(shipment.createdAt).toLocaleDateString()}
                       </CardDescription>
                     </div>
-                    <Badge className={`${getStatusColor(shipment.status)} text-white text-lg px-4 py-2`}>
-                      {shipment.status.toUpperCase()}
-                    </Badge>
+                    <div className="flex items-center gap-3">
+                      <Button 
+                        onClick={downloadShipmentLabel}
+                        variant="outline"
+                        className="gap-2"
+                      >
+                        <Download className="h-4 w-4" />
+                        Download Label
+                      </Button>
+                      <Badge className={`${getStatusColor(shipment.status)} text-white text-lg px-4 py-2`}>
+                        {shipment.status.toUpperCase()}
+                      </Badge>
+                    </div>
                   </div>
                 </CardHeader>
               </Card>

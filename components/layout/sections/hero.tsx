@@ -12,7 +12,9 @@ export const HeroSection = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    alert("Tracking functionality coming soon");
+    if (trackingNumber.trim()) {
+      window.location.href = `/track?tn=${encodeURIComponent(trackingNumber.trim())}`;
+    }
   };
 
   const carouselImages = [
