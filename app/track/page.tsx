@@ -470,6 +470,7 @@ export default function TrackPage() {
                       </CardDescription>
                     </div>
                     <div className="flex items-center gap-3">
+                      <br />
                       <Button 
                         onClick={downloadShipmentLabel}
                         variant="outline"
@@ -478,6 +479,7 @@ export default function TrackPage() {
                         <Download className="h-4 w-4" />
                         Download Label
                       </Button>
+                      <br />
                       <Badge className={`${getStatusColor(shipment.status)} text-white text-lg px-4 py-2`}>
                         {shipment.status.toUpperCase()}
                       </Badge>
