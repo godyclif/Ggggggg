@@ -9,6 +9,8 @@ import { Label } from "@/components/ui/label";
 import { ShipmentForm } from "./ShipmentForm";
 import toast from "react-hot-toast";
 import { Search, Loader2 } from "lucide-react";
+import { shipmentValidationSchema } from "@/lib/validations/shipment";
+import { ZodError } from "zod";
 
 export function EditShipment() {
   const [trackingNumber, setTrackingNumber] = useState("");
@@ -82,6 +84,23 @@ export function EditShipment() {
   const handleUpdate = async () => {
     setIsSaving(true);
     try {
+      // Frontend validation
+      const dataToValidate = {
+        ...formData,
+        trackingNumber,
+      };
+      
+      try {
+        shipmentValidationSchema.parse(dataToValidate);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          const firstError = error.errors[0];
+          toast.error(`${firstError.path.join('.')}: ${firstError.message}`);
+          setIsSaving(false);
+          return;
+        }
+      }
+
       const response = await fetch(`/api/shipments/${trackingNumber}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
@@ -91,7 +110,16 @@ export function EditShipment() {
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to update shipment");
+        if (data.details) {
+          // Show validation errors from backend
+          data.details.forEach((detail: { field: string; message: string }) => {
+            toast.error(`${detail.field}: ${detail.message}`);
+          });
+        } else {
+          throw new Error(data.error || "Failed to update shipment");
+        }
+        setIsSaving(false);
+        return;
       }
 
       toast.success("Shipment updated successfully!");

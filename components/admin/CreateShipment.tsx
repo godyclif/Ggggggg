@@ -6,6 +6,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { ShipmentForm } from "./ShipmentForm";
 import toast from "react-hot-toast";
 import { Copy, Loader2 } from "lucide-react";
+import { shipmentValidationSchema } from "@/lib/validations/shipment";
+import { ZodError } from "zod";
 
 interface CreateShipmentProps {
   trackingNumber: string;
@@ -60,19 +62,42 @@ export function CreateShipment({ trackingNumber, onRegenerateTracking }: CreateS
   const handleSubmit = async () => {
     setIsLoading(true);
     try {
+      // Frontend validation
+      const dataToValidate = {
+        ...formData,
+        trackingNumber,
+      };
+      
+      try {
+        shipmentValidationSchema.parse(dataToValidate);
+      } catch (error) {
+        if (error instanceof ZodError) {
+          const firstError = error.errors[0];
+          toast.error(`${firstError.path.join('.')}: ${firstError.message}`);
+          setIsLoading(false);
+          return;
+        }
+      }
+
       const response = await fetch("/api/shipments/create", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ...formData,
-          trackingNumber,
-        }),
+        body: JSON.stringify(dataToValidate),
       });
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to create shipment");
+        if (data.details) {
+          // Show validation errors from backend
+          data.details.forEach((detail: { field: string; message: string }) => {
+            toast.error(`${detail.field}: ${detail.message}`);
+          });
+        } else {
+          throw new Error(data.error || "Failed to create shipment");
+        }
+        setIsLoading(false);
+        return;
       }
 
       toast.success("Shipment created successfully!");
