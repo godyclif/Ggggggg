@@ -81,7 +81,10 @@ export function ShipmentForm({ formData, setFormData, isEditMode }: ShipmentForm
   };
 
   const handleLocationChange = (lat: number, lng: number) => {
-    setFormData({ ...formData, latitude: lat, longitude: lng });
+    // Only update if values actually changed
+    if (formData.latitude !== lat || formData.longitude !== lng) {
+      setFormData({ ...formData, latitude: lat, longitude: lng });
+    }
   };
 
   // Parse address from clipboard paste
