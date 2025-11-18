@@ -2,6 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes carousel {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-300vw);
+  }
+}
+
+.animate-carousel {
+  animation: carousel 30s linear infinite;
+}
+
 html {
   scroll-behavior: smooth;
 }
