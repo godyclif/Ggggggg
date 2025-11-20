@@ -84,7 +84,7 @@ export function ShipmentForm({ formData, setFormData, isEditMode }: ShipmentForm
   const handleLocationChange = (lat: number, lng: number) => {
     // Only update if the location actually changed significantly
     if (Math.abs(formData.latitude - lat) > 0.0001 || Math.abs(formData.longitude - lng) > 0.0001) {
-      setFormData((prev) => ({ ...prev, latitude: lat, longitude: lng }));
+      setFormData({ ...formData, latitude: lat, longitude: lng });
     }
   };
 
