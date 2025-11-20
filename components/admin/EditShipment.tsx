@@ -119,7 +119,8 @@ export function EditShipment({ initialTrackingNumber }: EditShipmentProps) {
     if (initialTrackingNumber && initialTrackingNumber.trim()) {
       searchShipment();
     }
-  }, [initialTrackingNumber, searchShipment]); // Added searchShipment to dependencies
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialTrackingNumber]); // Only depend on initialTrackingNumber to avoid infinite loop
 
   const handleUpdate = async () => {
     setIsSaving(true);
