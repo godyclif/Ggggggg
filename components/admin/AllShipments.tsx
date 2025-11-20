@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
@@ -85,12 +84,12 @@ export function AllShipments({ onEditShipment }: AllShipmentsProps) {
       }
 
       toast.success("Shipment deleted successfully!");
-      
+
       // Remove shipment from local state
       setShipments(shipments.filter(
         (s) => s.trackingNumber !== selectedShipment.trackingNumber
       ));
-      
+
       setShowDeleteDialog(false);
       setSelectedShipment(null);
     } catch (err: any) {
@@ -159,8 +158,16 @@ export function AllShipments({ onEditShipment }: AllShipmentsProps) {
                           {shipment.status}
                         </Badge>
                       </td>
-                      <td className="py-3 px-4">{shipment.shippingDate}</td>
-                      <td className="py-3 px-4">{shipment.estimatedDeliveryDate}</td>
+                      <td className="py-3 px-4">
+                        {new Date(shipment.shippingDate).toLocaleString(undefined, {
+                          year: 'numeric',
+                          month: 'short',
+                          day: 'numeric',
+                          hour: '2-digit',
+                          minute: '2-digit'
+                        })}
+                      </td>
+                      <td className="py-3 px-4">{new Date(shipment.estimatedDeliveryDate).toLocaleDateString()}</td>
                       <td className="py-3 px-4">
                         <div className="flex gap-2">
                           <Button

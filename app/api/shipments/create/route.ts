@@ -58,7 +58,7 @@ export async function POST(req: NextRequest) {
         status: 'pending',
         location: `${validatedData.senderCity}, ${validatedData.senderState}`,
         description: 'Shipment created at origin facility',
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         icon: 'package'
       }]
     });

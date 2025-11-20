@@ -1,7 +1,7 @@
-
 import React from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Package, Truck, MapPin, CheckCircle, Clock, XCircle, AlertCircle } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
+import { Clock, MapPin, Package, Truck, CheckCircle, XCircle, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface TimelineEntry {
@@ -16,43 +16,51 @@ interface ShipmentTimelineProps {
   history: TimelineEntry[];
 }
 
+const getIconComponent = (iconName: string) => {
+  const icons: Record<string, React.ComponentType<any>> = {
+    package: Package,
+    truck: Truck,
+    mappin: MapPin,
+    check: CheckCircle,
+    clock: Clock,
+    x: XCircle,
+    alert: AlertCircle,
+  };
+  return icons[iconName.toLowerCase()] || Clock;
+};
+
+const getStatusColor = (status: string) => {
+  const colors: Record<string, string> = {
+    pending: "bg-yellow-500",
+    "in-transit": "bg-blue-500",
+    delivered: "bg-green-500",
+    cancelled: "bg-red-500",
+    processing: "bg-orange-500",
+    "out-for-delivery": "bg-purple-500",
+    "on-hold": "bg-amber-600",
+  };
+  return colors[status.toLowerCase()] || "bg-gray-500";
+};
+
+const formatLocalDateTime = (timestamp: Date | string) => {
+  const date = new Date(timestamp);
+  // Use toLocaleString with undefined locale to use the user's default locale
+  // and specify desired formatting options.
+  return date.toLocaleString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true, // Use 12-hour format with AM/PM
+  });
+};
+
 export function ShipmentTimeline({ history }: ShipmentTimelineProps) {
-  const getIcon = (iconName: string) => {
-    const icons: Record<string, React.ComponentType<any>> = {
-      package: Package,
-      truck: Truck,
-      mappin: MapPin,
-      check: CheckCircle,
-      clock: Clock,
-      x: XCircle,
-      alert: AlertCircle,
-    };
-    return icons[iconName.toLowerCase()] || Clock;
-  };
-
-  const getStatusColor = (status: string) => {
-    const colors: Record<string, string> = {
-      pending: "bg-yellow-500",
-      "in-transit": "bg-blue-500",
-      delivered: "bg-green-500",
-      cancelled: "bg-red-500",
-      processing: "bg-orange-500",
-      "out-for-delivery": "bg-purple-500",
-      "on-hold": "bg-amber-600",
-    };
-    return colors[status.toLowerCase()] || "bg-gray-500";
-  };
-
-  const formatTimestamp = (timestamp: Date | string) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
+  // Sort history by timestamp in descending order
+  const sortedHistory = [...history].sort((a, b) => 
+    new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  );
 
   if (!history || history.length === 0) {
     return (
@@ -87,9 +95,9 @@ export function ShipmentTimeline({ history }: ShipmentTimelineProps) {
 
           {/* Timeline entries */}
           <div className="space-y-6">
-            {history.map((entry, index) => {
-              const IconComponent = getIcon(entry.icon);
-              const isLast = index === history.length - 1;
+            {sortedHistory.map((entry, index) => {
+              const IconComponent = getIconComponent(entry.icon);
+              const isLast = index === sortedHistory.length - 1;
 
               return (
                 <div key={index} className="relative flex gap-4 pb-2">
@@ -118,7 +126,7 @@ export function ShipmentTimeline({ history }: ShipmentTimelineProps) {
                       </div>
                       <div className="flex-shrink-0 text-right">
                         <p className="text-xs text-muted-foreground whitespace-nowrap">
-                          {formatTimestamp(entry.timestamp)}
+                          {formatLocalDateTime(entry.timestamp)}
                         </p>
                       </div>
                     </div>

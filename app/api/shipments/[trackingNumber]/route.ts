@@ -124,7 +124,7 @@ export async function PUT(
         status: currentStatus,
         location: currentLocation,
         description: description,
-        timestamp: new Date(),
+        timestamp: new Date().toISOString(),
         icon: getIconForStatus(currentStatus)
       };
 
