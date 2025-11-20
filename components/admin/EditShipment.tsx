@@ -55,7 +55,6 @@ export function EditShipment({ initialTrackingNumber }: EditShipmentProps) {
     shippingDate: "",
     estimatedDeliveryDate: "",
     shippingCost: "",
-    status: "pending",
     latitude: 40.7128,
     longitude: -74.0060,
   });
