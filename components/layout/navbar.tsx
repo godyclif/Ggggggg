@@ -22,7 +22,6 @@ import { Menu, LogOut } from "lucide-react";
 import { ModeToggle } from "./toogle-theme";
 import { useAuth } from "@/contexts/AuthContext";
 import { AuthDialog } from "@/components/auth/AuthDialog";
-import Image from "next/image";
 
 interface RouteProps {
   href: string;
@@ -58,12 +57,7 @@ export const Navbar = () => {
           <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
             <NavigationMenuItem className="font-bold flex">
               <Link href="/" className="ml-2 font-bold text-xl flex items-center">
-                <Image
-                  src="/logo.png"
-                  alt="RapidWave Logistics"
-                  width={36}
-                  height={36}
-                />
+                <img src="/logo.png" alt="RapidWave Logistics" className="h-11 w-auto" />
               </Link>
             </NavigationMenuItem>
 
@@ -82,12 +76,7 @@ export const Navbar = () => {
                 <SheetContent side={"left"}>
                   <SheetHeader>
                     <SheetTitle className="font-bold text-xl flex items-center gap-2">
-                      <Image
-                        src="/logo.png"
-                        alt="RapidWave Logistics"
-                        width={36}
-                        height={36}
-                      />
+                      <img src="/logo.png" alt="RapidWave Logistics" className="h-8 w-auto" />
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col justify-center items-center gap-2 mt-4">

@@ -2,7 +2,6 @@
 import { Separator } from "@/components/ui/separator";
 import { ChevronsDownIcon } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image";
 
 export const FooterSection = () => {
   const currentYear = new Date().getFullYear();
@@ -13,13 +12,7 @@ export const FooterSection = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-6 gap-x-12 gap-y-8">
           <div className="col-span-full xl:col-span-2">
             <Link href="/" className="flex font-bold items-center">
-              <Image
-                src="/logo.png"
-                alt="RapidWave Logistics"
-                className="h-12 w-auto"
-                width={100} 
-                height={50} 
-              />
+              <img src="/logo.png" alt="RapidWave Logistics" className="h-12 w-auto" />
             </Link>
           </div>
 
