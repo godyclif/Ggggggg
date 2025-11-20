@@ -118,6 +118,21 @@ export function GoogleMap({
       });
     });
 
+    mapRef.current = map;
+    currentLocationMarkerRef.current = currentMarker;
+
+    return () => {
+      map.remove();
+    };
+  }, []);
+
+  // Handle map clicks for dropping markers
+  useEffect(() => {
+    if (!mapRef.current || !currentLocationMarkerRef.current) return;
+
+    const map = mapRef.current;
+    const currentMarker = currentLocationMarkerRef.current;
+
     const handleMapClick = (e: mapboxgl.MapMouseEvent) => {
       // Only allow map clicks when in drop marker mode (create mode only)
       if (isCreateMode && isDropMarkerMode) {
@@ -139,13 +154,10 @@ export function GoogleMap({
 
     map.on("click", handleMapClick);
 
-    mapRef.current = map;
-    currentLocationMarkerRef.current = currentMarker;
-
     return () => {
-      map.remove();
+      map.off("click", handleMapClick);
     };
-  }, []);
+  }, [isDropMarkerMode, isCreateMode, onLocationChange]);
 
   // Update current location marker
   useEffect(() => {
