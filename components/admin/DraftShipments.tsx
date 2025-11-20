@@ -4,11 +4,9 @@
 import { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { ShipmentForm } from "./ShipmentForm";
 import toast from "react-hot-toast";
-import { FileText, Loader2, Trash2, Search, Save } from "lucide-react";
+import { FileText, Loader2, Trash2, Copy } from "lucide-react";
 import { shipmentValidationSchema } from "@/lib/validations/shipment";
 import { ZodError } from "zod";
 
@@ -21,7 +19,11 @@ interface Draft {
   [key: string]: any;
 }
 
-export function DraftShipments() {
+interface DraftShipmentsProps {
+  onEditShipment?: (trackingNumber: string) => void;
+}
+
+export function DraftShipments({ onEditShipment }: DraftShipmentsProps) {
   const [drafts, setDrafts] = useState<Draft[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedDraft, setSelectedDraft] = useState<Draft | null>(null);
@@ -230,6 +232,17 @@ export function DraftShipments() {
     }
   };
 
+  const copyTrackingNumber = () => {
+    if (selectedDraft) {
+      navigator.clipboard.writeText(selectedDraft.trackingNumber);
+      toast.success("Tracking number copied to clipboard!");
+    }
+  };
+
+  const backToDraftsList = () => {
+    setSelectedDraft(null);
+  };
+
   if (isLoading) {
     return (
       <Card>
@@ -242,112 +255,111 @@ export function DraftShipments() {
     );
   }
 
-  return (
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-      <Card className="lg:col-span-1">
+  // If a draft is selected, show the full edit interface
+  if (selectedDraft) {
+    return (
+      <Card>
         <CardHeader>
-          <CardTitle>Draft Shipments</CardTitle>
-          <CardDescription>
-            {drafts.length} draft{drafts.length !== 1 ? "s" : ""} saved
-          </CardDescription>
+          <div className="flex items-center justify-between">
+            <div className="flex-1">
+              <CardTitle>Edit Draft Shipment</CardTitle>
+              <CardDescription>
+                Complete the form and create the shipment or save your changes
+              </CardDescription>
+            </div>
+            <Button onClick={backToDraftsList} variant="outline">
+              Back to Drafts
+            </Button>
+          </div>
+          <div className="flex items-center gap-2 mt-4">
+            <div className="flex-1 p-3 bg-muted rounded-lg font-mono text-sm">
+              {selectedDraft.trackingNumber}
+            </div>
+            <Button onClick={copyTrackingNumber} variant="outline" size="icon">
+              <Copy className="h-4 w-4" />
+            </Button>
+          </div>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-2">
-            {drafts.length === 0 ? (
-              <div className="text-center py-8 text-muted-foreground">
-                <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                <p>No drafts saved</p>
-              </div>
-            ) : (
-              drafts.map((draft) => (
-                <div
-                  key={draft._id}
-                  className={`p-4 border rounded-lg cursor-pointer transition-colors ${
-                    selectedDraft?.trackingNumber === draft.trackingNumber
-                      ? "border-primary bg-primary/5"
-                      : "hover:bg-muted"
-                  }`}
-                  onClick={() => loadDraft(draft)}
-                >
-                  <div className="flex items-center justify-between">
-                    <div className="flex-1">
-                      <p className="font-mono text-sm font-semibold">
-                        {draft.trackingNumber}
-                      </p>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {draft.senderName || "No sender"} → {draft.recipientName || "No recipient"}
-                      </p>
-                      <p className="text-xs text-muted-foreground mt-1">
-                        {new Date(draft.createdAt).toLocaleDateString()}
-                      </p>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        deleteDraft(draft.trackingNumber);
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-destructive" />
-                    </Button>
-                  </div>
-                </div>
-              ))
-            )}
+        <CardContent className="space-y-6">
+          <ShipmentForm formData={formData} setFormData={setFormData} isEditMode={false} />
+          <div className="flex gap-3">
+            <Button onClick={completeDraft} className="flex-1" disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Creating Shipment...
+                </>
+              ) : (
+                "Complete & Create Shipment"
+              )}
+            </Button>
+            <Button onClick={updateDraft} variant="outline" className="flex-1" disabled={isProcessing}>
+              {isProcessing ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                "Save as Draft"
+              )}
+            </Button>
           </div>
         </CardContent>
       </Card>
+    );
+  }
 
-      <Card className="lg:col-span-2">
-        <CardHeader>
-          <CardTitle>
-            {selectedDraft ? `Edit Draft: ${selectedDraft.trackingNumber}` : "Select a Draft"}
-          </CardTitle>
-          <CardDescription>
-            {selectedDraft
-              ? "Complete the form and create the shipment"
-              : "Choose a draft from the list to continue"}
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          {selectedDraft ? (
-            <div className="space-y-6">
-              <ShipmentForm formData={formData} setFormData={setFormData} isEditMode={false} />
-              <div className="flex gap-3">
-                <Button onClick={completeDraft} className="flex-1" disabled={isProcessing}>
-                  {isProcessing ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Creating Shipment...
-                    </>
-                  ) : (
-                    "Complete & Create Shipment"
-                  )}
-                </Button>
-                <Button onClick={updateDraft} variant="outline" className="flex-1" disabled={isProcessing}>
-                  {isProcessing ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      Saving...
-                    </>
-                  ) : (
-                    <>
-                      <Save className="mr-2 h-4 w-4" />
-                      Update Draft
-                    </>
-                  )}
-                </Button>
-              </div>
+  // Otherwise, show the drafts list
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>Draft Shipments</CardTitle>
+        <CardDescription>
+          {drafts.length} draft{drafts.length !== 1 ? "s" : ""} saved
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <div className="space-y-2">
+          {drafts.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground">
+              <FileText className="h-12 w-12 mx-auto mb-2 opacity-50" />
+              <p>No drafts saved</p>
             </div>
           ) : (
-            <div className="text-center py-12 text-muted-foreground">
-              <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>Select a draft from the list to view and edit</p>
-            </div>
+            drafts.map((draft) => (
+              <div
+                key={draft._id}
+                className="p-4 border rounded-lg cursor-pointer transition-colors hover:bg-muted"
+                onClick={() => loadDraft(draft)}
+              >
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <p className="font-mono text-sm font-semibold">
+                      {draft.trackingNumber}
+                    </p>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {draft.senderName || "No sender"} → {draft.recipientName || "No recipient"}
+                    </p>
+                    <p className="text-xs text-muted-foreground mt-1">
+                      {new Date(draft.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      deleteDraft(draft.trackingNumber);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4 text-destructive" />
+                  </Button>
+                </div>
+              </div>
+            ))
           )}
-        </CardContent>
-      </Card>
-    </div>
+        </div>
+      </CardContent>
+    </Card>
   );
 }

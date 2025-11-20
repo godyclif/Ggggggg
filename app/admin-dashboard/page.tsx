@@ -112,7 +112,7 @@ export default function AdminDashboard() {
           {activeTab === "edit" && <EditShipment initialTrackingNumber={editTrackingNumber} />}
           {activeTab === "all" && <AllShipments onEditShipment={handleEditShipment} />}
           {activeTab === "analytics" && <Analytics />}
-          {activeTab === "drafts" && <DraftShipments onEditShipment={handleEditShipment} />}
+          {activeTab === "drafts" && <DraftShipments />}
         </div>
       </div>
     </div>
