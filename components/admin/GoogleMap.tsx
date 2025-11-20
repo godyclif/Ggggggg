@@ -27,7 +27,8 @@ export function GoogleMap({
 }: MapboxMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
-  const markerRef = useRef<mapboxgl.Marker | null>(null);
+  const currentLocationMarkerRef = useRef<mapboxgl.Marker | null>(null);
+  const originMarkerRef = useRef<mapboxgl.Marker | null>(null);
   const recipientMarkerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
@@ -42,16 +43,16 @@ export function GoogleMap({
       zoom: 12,
     });
 
-    // Current shipment location marker (blue)
-    const marker = new mapboxgl.Marker({
+    // Current shipment location marker (red/orange - draggable)
+    const currentMarker = new mapboxgl.Marker({
       draggable: true,
-      color: "#3b82f6",
+      color: "#f97316", // Orange color
     })
       .setLngLat([longitude || -74.0060, latitude || 40.7128])
       .addTo(map);
 
-    marker.on("dragend", () => {
-      const lngLat = marker.getLngLat();
+    currentMarker.on("dragend", () => {
+      const lngLat = currentMarker.getLngLat();
       requestAnimationFrame(() => {
         onLocationChange(lngLat.lat, lngLat.lng);
       });
@@ -59,6 +60,7 @@ export function GoogleMap({
 
     const handleMapClick = (e: mapboxgl.MapMouseEvent) => {
       const { lng, lat } = e.lngLat;
+      currentMarker.setLngLat([lng, lat]);
       requestAnimationFrame(() => {
         onLocationChange(lat, lng);
       });
@@ -67,7 +69,7 @@ export function GoogleMap({
     map.on("click", handleMapClick);
 
     mapRef.current = map;
-    markerRef.current = marker;
+    currentLocationMarkerRef.current = currentMarker;
 
     return () => {
       map.remove();
@@ -76,18 +78,50 @@ export function GoogleMap({
 
   // Update current location marker
   useEffect(() => {
-    if (markerRef.current && latitude && longitude) {
-      markerRef.current.setLngLat([longitude, latitude]);
-      mapRef.current?.setCenter([longitude, latitude]);
+    if (currentLocationMarkerRef.current && latitude && longitude) {
+      currentLocationMarkerRef.current.setLngLat([longitude, latitude]);
     }
   }, [latitude, longitude]);
 
-  // Move marker to sender address when it's provided
+  // Add origin marker when sender address is provided (blue - non-draggable)
   useEffect(() => {
-    if (senderLat && senderLng && markerRef.current && mapRef.current) {
-      markerRef.current.setLngLat([senderLng, senderLat]);
-      mapRef.current.setCenter([senderLng, senderLat]);
-      onLocationChange(senderLat, senderLng);
+    if (senderLat && senderLng && mapRef.current) {
+      // Remove existing origin marker if any
+      if (originMarkerRef.current) {
+        originMarkerRef.current.remove();
+      }
+
+      // Create new origin marker (blue, non-draggable)
+      originMarkerRef.current = new mapboxgl.Marker({
+        draggable: false,
+        color: "#3b82f6", // Blue color
+      })
+        .setLngLat([senderLng, senderLat])
+        .addTo(mapRef.current);
+
+      // Initially set current location to sender location if not already set
+      if (!latitude || !longitude || (latitude === 40.7128 && longitude === -74.0060)) {
+        if (currentLocationMarkerRef.current) {
+          currentLocationMarkerRef.current.setLngLat([senderLng, senderLat]);
+        }
+        onLocationChange(senderLat, senderLng);
+      }
+
+      // Fit map to show both markers
+      if (currentLocationMarkerRef.current) {
+        const currentLngLat = currentLocationMarkerRef.current.getLngLat();
+        const bounds = new mapboxgl.LngLatBounds()
+          .extend([senderLng, senderLat])
+          .extend([currentLngLat.lng, currentLngLat.lat]);
+        
+        if (recipientLat && recipientLng) {
+          bounds.extend([recipientLng, recipientLat]);
+        }
+
+        mapRef.current.fitBounds(bounds, {
+          padding: 100,
+        });
+      }
     }
   }, [senderLat, senderLng]);
 
@@ -130,7 +164,11 @@ export function GoogleMap({
       <div className="flex items-center gap-4 text-sm text-muted-foreground">
         <div className="flex items-center gap-2">
           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-          <span>Origin</span>
+          <span>Origin (Sender)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+          <span>Current Location (Draggable)</span>
         </div>
         {recipientLat && recipientLng && (
           <div className="flex items-center gap-2">
