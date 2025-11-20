@@ -531,6 +531,10 @@ export default function TrackPage() {
                       destinationCity={shipment.recipientCity}
                       destinationState={shipment.recipientState}
                       destinationCountry={shipment.recipientCountry}
+                      senderAddress={shipment.senderAddress}
+                      senderCity={shipment.senderCity}
+                      senderState={shipment.senderState}
+                      senderCountry={shipment.senderCountry}
                     />
                   </CardContent>
                 </Card>
