@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -21,43 +20,72 @@ export function EditShipment({ initialTrackingNumber }: EditShipmentProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [shipmentFound, setShipmentFound] = useState(false);
-  const [formData, setFormData] = useState({
-    senderName: "",
-    senderEmail: "",
-    senderPhone: "",
-    senderAddress: "",
-    senderCity: "",
-    senderState: "",
-    senderZip: "",
-    senderCountry: "",
-    recipientName: "",
-    recipientEmail: "",
-    recipientPhone: "",
-    recipientAddress: "",
-    recipientCity: "",
-    recipientState: "",
-    recipientZip: "",
-    recipientCountry: "",
-    packageType: "box",
-    weight: "",
-    dimensions: {
-      length: "",
-      width: "",
-      height: "",
-    },
-    value: "",
-    description: "",
-    specialInstructions: "",
-    serviceType: "standard",
-    priority: "normal",
+  const [formData, setFormData] = useState<{
+    senderName: string;
+    senderEmail: string;
+    senderPhone: string;
+    senderAddress: string;
+    senderCity: string;
+    senderState: string;
+    senderZip: string;
+    senderCountry: string;
+    recipientName: string;
+    recipientEmail: string;
+    recipientPhone: string;
+    recipientAddress: string;
+    recipientCity: string;
+    recipientState: string;
+    recipientZip: string;
+    recipientCountry: string;
+    packageType: string;
+    weight: string;
+    dimensions: { length: string; width: string; height: string };
+    value: string;
+    description: string;
+    specialInstructions: string;
+    serviceType: string;
+    priority: string;
+    insurance: boolean;
+    signatureRequired: boolean;
+    shippingDate: string;
+    estimatedDeliveryDate: string;
+    shippingCost: string;
+    latitude: number;
+    longitude: number;
+    status?: string;
+  }>({
+    senderName: '',
+    senderEmail: '',
+    senderPhone: '',
+    senderAddress: '',
+    senderCity: '',
+    senderState: '',
+    senderZip: '',
+    senderCountry: '',
+    recipientName: '',
+    recipientEmail: '',
+    recipientPhone: '',
+    recipientAddress: '',
+    recipientCity: '',
+    recipientState: '',
+    recipientZip: '',
+    recipientCountry: '',
+    packageType: 'package',
+    weight: '',
+    dimensions: { length: '', width: '', height: '' },
+    value: '',
+    description: '',
+    specialInstructions: '',
+    serviceType: 'standard',
+    priority: 'standard',
     insurance: false,
     signatureRequired: false,
-    shippingDate: "",
-    estimatedDeliveryDate: "",
-    shippingCost: "",
-    latitude: 40.7128,
-    longitude: -74.0060,
-    status: "pending",
+    shippingDate: '',
+    estimatedDeliveryDate: '',
+    shippingCost: '',
+    latitude: 0,
+    longitude: 0,
+    status: 'pending'
   });
 
   const searchShipment = async () => {
@@ -101,7 +129,7 @@ export function EditShipment({ initialTrackingNumber }: EditShipmentProps) {
         ...formData,
         trackingNumber,
       };
-      
+
       try {
         shipmentValidationSchema.parse(dataToValidate);
       } catch (error) {
