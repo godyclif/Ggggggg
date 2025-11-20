@@ -1,9 +1,10 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Loader2, MapPin } from "lucide-react";
+import { Loader2, MapPin, Trash2 } from "lucide-react";
 import toast from "react-hot-toast";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,10 +12,9 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogDescription,
+  DialogFooter,
 } from "@/components/ui/dialog";
-
-// Assuming RouteViewer component is defined elsewhere and handles map display
-// import RouteViewer from './RouteViewer';
 
 interface Shipment {
   trackingNumber: string;
@@ -24,7 +24,6 @@ interface Shipment {
   serviceType: string;
   shippingDate: string;
   estimatedDeliveryDate: string;
-  // Added properties for shipment tracking
   currentLocation?: { lat: number; lng: number };
   destination?: { lat: number; lng: number };
 }
@@ -33,7 +32,9 @@ export function AllShipments() {
   const [shipments, setShipments] = useState<Shipment[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [showRouteDialog, setShowRouteDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   useEffect(() => {
     fetchShipments();
@@ -48,12 +49,50 @@ export function AllShipments() {
         throw new Error(data.error || "Failed to fetch shipments");
       }
 
-      // Assuming the API now returns shipments with location data
       setShipments(data.shipments);
     } catch (err: any) {
       toast.error(err.message || "Failed to load shipments");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleDeleteClick = (shipment: Shipment) => {
+    setSelectedShipment(shipment);
+    setShowDeleteDialog(true);
+  };
+
+  const handleDeleteConfirm = async () => {
+    if (!selectedShipment) return;
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch(
+        `/api/shipments/${selectedShipment.trackingNumber}/delete`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete shipment");
+      }
+
+      toast.success("Shipment deleted successfully!");
+      
+      // Remove shipment from local state
+      setShipments(shipments.filter(
+        (s) => s.trackingNumber !== selectedShipment.trackingNumber
+      ));
+      
+      setShowDeleteDialog(false);
+      setSelectedShipment(null);
+    } catch (err: any) {
+      toast.error(err.message || "Failed to delete shipment");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -119,17 +158,27 @@ export function AllShipments() {
                       <td className="py-3 px-4">{shipment.shippingDate}</td>
                       <td className="py-3 px-4">{shipment.estimatedDeliveryDate}</td>
                       <td className="py-3 px-4">
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => {
-                            setSelectedShipment(shipment);
-                            setShowRouteDialog(true);
-                          }}
-                        >
-                          <MapPin className="h-4 w-4 mr-1" />
-                          View Route
-                        </Button>
+                        <div className="flex gap-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => {
+                              setSelectedShipment(shipment);
+                              setShowRouteDialog(true);
+                            }}
+                          >
+                            <MapPin className="h-4 w-4 mr-1" />
+                            View Route
+                          </Button>
+                          <Button
+                            variant="destructive"
+                            size="sm"
+                            onClick={() => handleDeleteClick(shipment)}
+                          >
+                            <Trash2 className="h-4 w-4 mr-1" />
+                            Delete
+                          </Button>
+                        </div>
                       </td>
                     </tr>
                   ))}
@@ -140,18 +189,14 @@ export function AllShipments() {
         </div>
       </CardContent>
 
+      {/* Route View Dialog */}
       <Dialog open={showRouteDialog} onOpenChange={setShowRouteDialog}>
         <DialogContent className="sm:max-w-[800px] max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Shipment Route: {selectedShipment?.trackingNumber}</DialogTitle>
           </DialogHeader>
           {selectedShipment ? (
-            // This is a placeholder for the actual map component.
-            // You would integrate a mapping library like Leaflet, Mapbox, or Google Maps here.
-            // The component should take currentLocation and destination as props.
             <div className="w-full h-96 bg-gray-200 flex items-center justify-center">
-              {/* Replace with your actual RouteViewer or map component */}
-              {/* Example: <RouteViewer currentLocation={selectedShipment.currentLocation} destination={selectedShipment.destination} /> */}
               <p className="text-muted-foreground">Map integration for route visualization goes here.</p>
               {selectedShipment.currentLocation && selectedShipment.destination && (
                 <p className="mt-2 text-sm text-muted-foreground">
@@ -164,6 +209,54 @@ export function AllShipments() {
               <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Dialog */}
+      <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete Shipment</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this shipment? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          {selectedShipment && (
+            <div className="py-4">
+              <p className="text-sm">
+                <strong>Tracking Number:</strong> {selectedShipment.trackingNumber}
+              </p>
+              <p className="text-sm">
+                <strong>Sender:</strong> {selectedShipment.senderName}
+              </p>
+              <p className="text-sm">
+                <strong>Recipient:</strong> {selectedShipment.recipientName}
+              </p>
+            </div>
+          )}
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setShowDeleteDialog(false)}
+              disabled={isDeleting}
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  Deleting...
+                </>
+              ) : (
+                "Delete Shipment"
+              )}
+            </Button>
+          </DialogFooter>
         </DialogContent>
       </Dialog>
     </Card>
