@@ -139,7 +139,7 @@ export default function TrackPage() {
 
     // Logo and company name
     doc.setFontSize(24);
-    doc.setTextColor(...primaryColor);
+    doc.setTextColor(primaryColor[0], primaryColor[1], primaryColor[2]);
     doc.setFont('helvetica', 'bold');
     doc.text('RapidWave Logistics', pageWidth / 2, yPos + 5, { align: 'center' });
 
