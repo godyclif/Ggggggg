@@ -1,9 +1,18 @@
 
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 
 interface RouteMapProps {
   currentLat: number;
@@ -16,6 +25,7 @@ interface RouteMapProps {
   senderCity?: string;
   senderState?: string;
   senderCountry?: string;
+  onOriginChange?: (lat: number, lng: number) => void;
 }
 
 export function RouteMap({ 
@@ -28,13 +38,17 @@ export function RouteMap({
   senderAddress,
   senderCity,
   senderState,
-  senderCountry
+  senderCountry,
+  onOriginChange,
 }: RouteMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const currentMarkerRef = useRef<mapboxgl.Marker | null>(null);
   const destinationMarkerRef = useRef<mapboxgl.Marker | null>(null);
   const originMarkerRef = useRef<mapboxgl.Marker | null>(null);
+  const [showOriginChangeModal, setShowOriginChangeModal] = useState(false);
+  const [pendingOriginLocation, setPendingOriginLocation] = useState<{ lat: number; lng: number } | null>(null);
+  const [originalOriginLocation, setOriginalOriginLocation] = useState<{ lat: number; lng: number } | null>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -163,10 +177,20 @@ export function RouteMap({
               .setPopup(new mapboxgl.Popup().setHTML("<h3>Origin (Sender)</h3>"))
               .addTo(map);
 
-            // Handle origin marker drag
+            // Store original origin location
+            setOriginalOriginLocation({ lat: originLat, lng: originLng });
+
+            // Handle origin marker drag start
+            originMarkerRef.current.on("dragstart", () => {
+              const lngLat = originMarkerRef.current!.getLngLat();
+              setOriginalOriginLocation({ lat: lngLat.lat, lng: lngLat.lng });
+            });
+
+            // Handle origin marker drag end
             originMarkerRef.current.on("dragend", () => {
               const lngLat = originMarkerRef.current!.getLngLat();
-              console.log("Origin marker moved to:", lngLat);
+              setPendingOriginLocation({ lat: lngLat.lat, lng: lngLat.lng });
+              setShowOriginChangeModal(true);
             });
 
             bounds.extend([originLng, originLat]);
@@ -205,25 +229,65 @@ export function RouteMap({
 
   }, [currentLat, currentLng, destinationAddress, destinationCity, destinationState, destinationCountry, senderAddress, senderCity, senderState, senderCountry]);
 
+  const handleConfirmOriginChange = () => {
+    if (pendingOriginLocation && onOriginChange) {
+      onOriginChange(pendingOriginLocation.lat, pendingOriginLocation.lng);
+    }
+    setShowOriginChangeModal(false);
+    setPendingOriginLocation(null);
+  };
+
+  const handleCancelOriginChange = () => {
+    // Revert marker to original position
+    if (originalOriginLocation && originMarkerRef.current) {
+      originMarkerRef.current.setLngLat([originalOriginLocation.lng, originalOriginLocation.lat]);
+    }
+    setShowOriginChangeModal(false);
+    setPendingOriginLocation(null);
+  };
+
   return (
-    <div className="space-y-3">
-      <div className="w-full h-[500px] rounded-lg overflow-hidden border">
-        <div ref={mapContainerRef} className="w-full h-full" />
+    <>
+      <div className="space-y-3">
+        <div className="w-full h-[500px] rounded-lg overflow-hidden border">
+          <div ref={mapContainerRef} className="w-full h-full" />
+        </div>
+        <div className="flex items-center gap-6 p-4 bg-muted rounded-lg flex-wrap">
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-blue-500"></div>
+            <span className="text-sm font-medium">Origin (Sender) - Draggable</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-blue-500 animate-pulse"></div>
+            <span className="text-sm font-medium">Current Location - Draggable</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded-full bg-green-500"></div>
+            <span className="text-sm font-medium">Destination</span>
+          </div>
+        </div>
       </div>
-      <div className="flex items-center gap-6 p-4 bg-muted rounded-lg flex-wrap">
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-500"></div>
-          <span className="text-sm font-medium">Origin (Sender) - Draggable</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-blue-500 animate-pulse"></div>
-          <span className="text-sm font-medium">Current Location - Draggable</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-4 h-4 rounded-full bg-green-500"></div>
-          <span className="text-sm font-medium">Destination</span>
-        </div>
-      </div>
-    </div>
+
+      {/* Origin Change Confirmation Modal */}
+      <Dialog open={showOriginChangeModal} onOpenChange={setShowOriginChangeModal}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Change Origin Location?</DialogTitle>
+            <DialogDescription>
+              You are about to change the origin (sender) location. This will update the starting point of the shipment.
+              Are you sure you want to proceed?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCancelOriginChange}>
+              Cancel
+            </Button>
+            <Button onClick={handleConfirmOriginChange}>
+              Confirm Change
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
