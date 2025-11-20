@@ -119,7 +119,7 @@ export function EditShipment({ initialTrackingNumber }: EditShipmentProps) {
     if (initialTrackingNumber && initialTrackingNumber.trim()) {
       searchShipment();
     }
-  }, [initialTrackingNumber]);
+  }, [initialTrackingNumber, searchShipment]); // Added searchShipment to dependencies
 
   const handleUpdate = async () => {
     setIsSaving(true);
