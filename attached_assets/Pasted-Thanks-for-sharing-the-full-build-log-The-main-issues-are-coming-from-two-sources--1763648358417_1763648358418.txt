@@ -1,0 +1,100 @@
+Thanks for sharing the full build log. The main issues are coming from **two sources**:
+
+---
+
+### **1️⃣ React Hook warnings (`useEffect`)**
+
+You have multiple warnings like:
+
+```
+Warning: React Hook useEffect has a missing dependency: 'searchShipment'. Either include it or remove the dependency array.
+```
+
+**Cause:**
+React wants all dependencies used inside `useEffect` to be included in the dependency array. This ensures the effect updates correctly when the values change.
+
+**Fix examples:**
+
+```ts
+// Before
+useEffect(() => {
+  searchShipment();
+}, []); // ❌ searchShipment missing
+
+// After
+useEffect(() => {
+  searchShipment();
+}, [searchShipment]); // ✅
+```
+
+**Tips:**
+
+* For functions declared inside the component, wrap them with `useCallback` if you don’t want the effect to run on every render.
+* For variables, just include them in the array.
+
+---
+
+### **2️⃣ Next.js `useSearchParams()` errors**
+
+You have repeated errors like:
+
+```
+useSearchParams() should be wrapped in a suspense boundary at page "/about"
+```
+
+**Cause:**
+In Next.js 14+, `useSearchParams()` is **client-only**. If you use it in a **server component** or during **static generation**, Next.js can’t resolve it at build time. That’s why the static export fails for many pages.
+
+**Solutions:**
+
+1. **Wrap your component using `useSearchParams` in a client component**:
+
+```ts
+'use client';
+
+import { useSearchParams } from 'next/navigation';
+
+export default function MyComponent() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get('id');
+  return <div>ID: {id}</div>;
+}
+```
+
+2. **Don’t use `useSearchParams` in pages/components that are statically generated (`getStaticProps`)**. Move them to client-only components.
+
+3. **Optional:** Wrap in a `Suspense` boundary if using it with server components:
+
+```tsx
+<Suspense fallback={<div>Loading...</div>}>
+  <MyClientComponent />
+</Suspense>
+```
+
+---
+
+### **3️⃣ Image optimization warnings**
+
+Next.js recommends using `<Image />` instead of `<img>`:
+
+```tsx
+import Image from 'next/image';
+
+<Image src="/logo.png" alt="Logo" width={100} height={50} />
+```
+
+This improves LCP and bandwidth usage.
+
+---
+
+✅ **Summary of fixes:**
+
+1. Add missing dependencies in `useEffect` or use `useCallback` for functions.
+2. Ensure `useSearchParams()` is only used in **client components**.
+3. Replace `<img>` with `<Image />` from `next/image` for better performance.
+
+---
+
+If you want, I can **rewrite one of your pages** (e.g., `/about`) to fix all the `useSearchParams()` build errors so that your production build succeeds. This will give a concrete example you can apply to the rest.
+
+Do you want me to do that?
