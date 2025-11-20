@@ -105,7 +105,13 @@ export default function TrackPage() {
   };
 
   const handleTrack = async () => {
-    await handleTrackWithNumber(trackingNumber);
+    // Get the current value from the input to handle paste scenarios
+    const currentValue = trackingNumber.trim();
+    if (!currentValue) {
+      toast.error("Please enter a tracking number");
+      return;
+    }
+    await handleTrackWithNumber(currentValue);
   };
 
   const downloadShipmentLabel = () => {
@@ -441,8 +447,13 @@ export default function TrackPage() {
               placeholder="Enter tracking number"
               value={trackingNumber}
               onChange={(e) => setTrackingNumber(e.target.value)}
+              onPaste={(e) => {
+                const pastedText = e.clipboardData.getData('text');
+                setTrackingNumber(pastedText);
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
+                  e.preventDefault();
                   handleTrack();
                 }
               }}
