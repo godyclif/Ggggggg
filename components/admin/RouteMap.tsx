@@ -75,7 +75,7 @@ export function RouteMap({
           const [destLng, destLat] = geocodeData.features[0].center;
 
           // Fetch the full route from current location to destination
-          const fullRouteUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${currentLng},${currentLat};${destLng},${destLat}?geometries=geojson&steps=true&access_token=${mapboxgl.accessToken}`;
+          const fullRouteUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${currentLng},${currentLat};${destLng},${destLat}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
           const fullRouteResponse = await fetch(fullRouteUrl);
           const fullRouteData = await fullRouteResponse.json();
 
@@ -115,102 +115,80 @@ export function RouteMap({
               },
             });
 
-            // Extract waypoints from the route steps
-            const waypoints: [number, number][] = [];
-            if (route.legs && route.legs.length > 0) {
-              route.legs.forEach((leg: any) => {
-                if (leg.steps) {
-                  leg.steps.forEach((step: any) => {
-                    if (step.maneuver && step.maneuver.location) {
-                      waypoints.push(step.maneuver.location);
-                    }
-                  });
-                }
+            // Get the origin point (start of the route) and draw covered distance
+            const allCoordinates = route.geometry.coordinates;
+            const originLng = allCoordinates[0][0];
+            const originLat = allCoordinates[0][1];
+
+            // Fetch covered route from origin to current location
+            const coveredRouteUrl = `https://api.mapbox.com/directions/v5/mapbox/driving/${originLng},${originLat};${currentLng},${currentLat}?geometries=geojson&access_token=${mapboxgl.accessToken}`;
+            const coveredRouteResponse = await fetch(coveredRouteUrl);
+            const coveredRouteData = await coveredRouteResponse.json();
+
+            let coveredDistanceStr = '0 km';
+
+            if (coveredRouteData.routes && coveredRouteData.routes.length > 0) {
+              const coveredRoute = coveredRouteData.routes[0];
+              const coveredDist = (coveredRoute.distance / 1000).toFixed(2);
+              coveredDistanceStr = `${coveredDist} km`;
+
+              // Add covered route source and layer (red line)
+              map.addSource('covered-route', {
+                type: 'geojson',
+                data: {
+                  type: 'Feature',
+                  properties: {},
+                  geometry: coveredRoute.geometry,
+                },
+              });
+
+              map.addLayer({
+                id: 'covered-route',
+                type: 'line',
+                source: 'covered-route',
+                layout: {
+                  'line-join': 'round',
+                  'line-cap': 'round',
+                },
+                paint: {
+                  'line-color': '#ef4444',
+                  'line-width': 5,
+                  'line-opacity': 0.85,
+                },
+              });
+            } else {
+              // Fallback to straight line for covered distance
+              const coveredDist = calculateStraightLineDistance(originLng, originLat, currentLng, currentLat);
+              coveredDistanceStr = `${coveredDist.toFixed(2)} km`;
+
+              map.addSource('covered-route', {
+                type: 'geojson',
+                data: {
+                  type: 'Feature',
+                  properties: {},
+                  geometry: {
+                    type: 'LineString',
+                    coordinates: [[originLng, originLat], [currentLng, currentLat]]
+                  },
+                },
+              });
+
+              map.addLayer({
+                id: 'covered-route',
+                type: 'line',
+                source: 'covered-route',
+                layout: {
+                  'line-join': 'round',
+                  'line-cap': 'round',
+                },
+                paint: {
+                  'line-color': '#ef4444',
+                  'line-width': 5,
+                  'line-opacity': 0.85,
+                  'line-dasharray': [2, 2],
+                },
               });
             }
-
-            // If we have waypoints, add them as small markers
-            waypoints.forEach((waypoint, index) => {
-              // Skip first and last waypoints (they're the origin and destination)
-              if (index === 0 || index === waypoints.length - 1) return;
-              
-              // Add small waypoint markers
-              const waypointMarker = document.createElement('div');
-              waypointMarker.className = 'waypoint-marker';
-              waypointMarker.style.width = '8px';
-              waypointMarker.style.height = '8px';
-              waypointMarker.style.backgroundColor = '#8b5cf6';
-              waypointMarker.style.borderRadius = '50%';
-              waypointMarker.style.border = '2px solid white';
-              
-              new mapboxgl.Marker({ element: waypointMarker })
-                .setLngLat(waypoint)
-                .addTo(map);
-            });
-
-            // Since this is a tracking page showing where the package IS (not where it's going),
-            // we need to show a "covered distance" line from origin to current location
-            // The origin would be the sender's location, but we only have current location
-            // So we'll assume the package started from the beginning of the route and show coverage
-            
-            // For simplicity, let's show the covered portion as the route from start to current
-            // We'll use the current location as a point on the route
-            const allCoordinates = route.geometry.coordinates;
-            
-            // Find closest point on route to current location
-            let closestIndex = 0;
-            let minDistance = Infinity;
-            
-            allCoordinates.forEach((coord: [number, number], index: number) => {
-              const dist = Math.sqrt(
-                Math.pow(coord[0] - currentLng, 2) + Math.pow(coord[1] - currentLat, 2)
-              );
-              if (dist < minDistance) {
-                minDistance = dist;
-                closestIndex = index;
-              }
-            });
-
-            // Create covered route (red line from start to current position)
-            const coveredCoordinates = allCoordinates.slice(0, closestIndex + 1);
-            
-            // Calculate covered distance
-            let coveredDist = 0;
-            for (let i = 0; i < coveredCoordinates.length - 1; i++) {
-              const [lng1, lat1] = coveredCoordinates[i];
-              const [lng2, lat2] = coveredCoordinates[i + 1];
-              coveredDist += calculateStraightLineDistance(lng1, lat1, lng2, lat2);
-            }
-            
-            const coveredDistanceStr = `${coveredDist.toFixed(2)} km`;
-
-            // Add covered route source and layer
-            map.addSource('covered-route', {
-              type: 'geojson',
-              data: {
-                type: 'Feature',
-                properties: {},
-                geometry: {
-                  type: 'LineString',
-                  coordinates: coveredCoordinates,
-                },
-              },
-            });
-
-            map.addLayer({
-              id: 'covered-route',
-              type: 'line',
-              source: 'covered-route',
-              layout: {
-                'line-join': 'round',
-                'line-cap': 'round',
-              },
-              paint: {
-                'line-color': '#ef4444',
-                'line-width': 5,
-                'line-opacity': 0.85,
-              },
-            });
 
             // Update route info
             setRouteInfo({ 
@@ -334,8 +312,8 @@ export function RouteMap({
                 <span className="text-sm font-medium">Destination</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 rounded-full bg-purple-500"></div>
-                <span className="text-sm font-medium">Route Waypoints</span>
+                <div className="w-3 h-1 bg-red-500"></div>
+                <span className="text-sm font-medium">Covered Path</span>
               </div>
             </div>
           </div>
