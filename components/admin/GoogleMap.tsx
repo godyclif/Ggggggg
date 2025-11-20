@@ -43,10 +43,59 @@ export function GoogleMap({
       zoom: 12,
     });
 
-    // Current shipment location marker (red/orange - draggable)
+    // Current shipment location marker (pulsing dot - draggable)
+    const el = document.createElement('div');
+    el.className = 'current-location-pulse-draggable';
+    el.innerHTML = `
+      <style>
+        .current-location-pulse-draggable {
+          width: 20px;
+          height: 20px;
+          position: relative;
+          cursor: grab;
+        }
+        .current-location-pulse-draggable:active {
+          cursor: grabbing;
+        }
+        .current-location-pulse-draggable::before {
+          content: '';
+          position: absolute;
+          width: 20px;
+          height: 20px;
+          border-radius: 50%;
+          background: #4285f4;
+          box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+          animation: pulse-animation-draggable 2s infinite;
+        }
+        .current-location-pulse-draggable::after {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #4285f4;
+          border: 2px solid white;
+        }
+        @keyframes pulse-animation-draggable {
+          0% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0.7);
+          }
+          50% {
+            box-shadow: 0 0 0 10px rgba(66, 133, 244, 0);
+          }
+          100% {
+            box-shadow: 0 0 0 0 rgba(66, 133, 244, 0);
+          }
+        }
+      </style>
+    `;
+    
     const currentMarker = new mapboxgl.Marker({
+      element: el,
       draggable: true,
-      color: "#f97316", // Orange color
     })
       .setLngLat([longitude || -74.0060, latitude || 40.7128])
       .addTo(map);
@@ -167,7 +216,7 @@ export function GoogleMap({
           <span>Origin (Sender)</span>
         </div>
         <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-orange-500"></div>
+          <div className="w-3 h-3 rounded-full bg-blue-500 animate-pulse"></div>
           <span>Current Location (Draggable)</span>
         </div>
         {recipientLat && recipientLng && (
