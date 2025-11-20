@@ -24,6 +24,8 @@ export function RouteMap({
 }: RouteMapProps) {
   const mapContainerRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const currentMarkerRef = useRef<mapboxgl.Marker | null>(null);
+  const destinationMarkerRef = useRef<mapboxgl.Marker | null>(null);
 
   useEffect(() => {
     if (!mapContainerRef.current) return;
@@ -40,6 +42,13 @@ export function RouteMap({
     mapRef.current = map;
 
     return () => {
+      // Clean up markers
+      if (currentMarkerRef.current) {
+        currentMarkerRef.current.remove();
+      }
+      if (destinationMarkerRef.current) {
+        destinationMarkerRef.current.remove();
+      }
       map.remove();
     };
   }, []);
@@ -61,14 +70,22 @@ export function RouteMap({
         if (geocodeData.features && geocodeData.features.length > 0) {
           const [destLng, destLat] = geocodeData.features[0].center;
 
+          // Remove old markers if they exist
+          if (currentMarkerRef.current) {
+            currentMarkerRef.current.remove();
+          }
+          if (destinationMarkerRef.current) {
+            destinationMarkerRef.current.remove();
+          }
+
           // Add current location marker (blue)
-          new mapboxgl.Marker({ color: "#3b82f6" })
+          currentMarkerRef.current = new mapboxgl.Marker({ color: "#3b82f6" })
             .setLngLat([currentLng, currentLat])
             .setPopup(new mapboxgl.Popup().setHTML("<h3>Current Location</h3>"))
             .addTo(map);
 
           // Add destination marker (green)
-          new mapboxgl.Marker({ color: "#10b981" })
+          destinationMarkerRef.current = new mapboxgl.Marker({ color: "#10b981" })
             .setLngLat([destLng, destLat])
             .setPopup(new mapboxgl.Popup().setHTML("<h3>Destination</h3>"))
             .addTo(map);
