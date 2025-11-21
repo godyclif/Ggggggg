@@ -4,6 +4,8 @@ import dbConnect from '@/lib/mongodb';
 import Shipment from '@/models/Shipment';
 import { shipmentValidationSchema } from '@/lib/validations/shipment';
 import { ZodError } from 'zod';
+import { emailService } from '@/lib/email/service';
+import { ShipmentEmailData } from '@/types/email';
 
 export async function POST(req: NextRequest) {
   try {
@@ -65,7 +67,54 @@ export async function POST(req: NextRequest) {
 
     await newShipment.save();
 
-    return NextResponse.json({ success: true, shipment: newShipment }, { status: 201 });
+    // Prepare email data
+    const emailData: ShipmentEmailData = {
+      trackingNumber: validatedData.trackingNumber,
+      senderName: validatedData.senderName,
+      senderEmail: validatedData.senderEmail,
+      senderAddress: validatedData.senderAddress,
+      senderCity: validatedData.senderCity,
+      senderState: validatedData.senderState,
+      senderZip: validatedData.senderZip,
+      senderCountry: validatedData.senderCountry,
+      recipientName: validatedData.recipientName,
+      recipientEmail: validatedData.recipientEmail,
+      recipientAddress: validatedData.recipientAddress,
+      recipientCity: validatedData.recipientCity,
+      recipientState: validatedData.recipientState,
+      recipientZip: validatedData.recipientZip,
+      recipientCountry: validatedData.recipientCountry,
+      packageType: validatedData.packageType,
+      weight: validatedData.weight,
+      dimensions: validatedData.dimensions,
+      value: validatedData.value,
+      description: validatedData.description || '',
+      serviceType: validatedData.serviceType,
+      priority: validatedData.priority,
+      shippingDate: validatedData.shippingDate,
+      estimatedDeliveryDate: validatedData.estimatedDeliveryDate,
+      shippingCost: validatedData.shippingCost,
+    };
+
+    // Send emails with error handling
+    const emailResult = await emailService.sendShipmentEmailsWithErrorHandling(emailData);
+
+    // Log email results
+    if (!emailResult.allSucceeded) {
+      console.warn('Some emails failed to send:', {
+        senderEmail: emailResult.senderEmail,
+        recipientEmail: emailResult.recipientEmail,
+      });
+    }
+
+    return NextResponse.json({ 
+      success: true, 
+      shipment: newShipment,
+      emailStatus: {
+        senderEmailSent: emailResult.senderEmail.success,
+        recipientEmailSent: emailResult.recipientEmail.success,
+      }
+    }, { status: 201 });
   } catch (error: any) {
     if (error instanceof ZodError) {
       return NextResponse.json(
@@ -77,6 +126,15 @@ export async function POST(req: NextRequest) {
           }))
         },
         { status: 400 }
+      );
+    }
+
+    // Check if error is from email sending
+    if (error.message && error.message.includes('Email delivery failed')) {
+      console.error("Email delivery error:", error);
+      return NextResponse.json(
+        { error: 'Shipment creation failed due to email delivery error', details: error.message },
+        { status: 500 }
       );
     }
 

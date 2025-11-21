@@ -168,6 +168,20 @@ export function CreateShipment({ trackingNumber, onRegenerateTracking }: CreateS
       }
 
       toast.success("Shipment created successfully!");
+      
+      // Show email status
+      if (data.emailStatus) {
+        if (data.emailStatus.senderEmailSent && data.emailStatus.recipientEmailSent) {
+          toast.success("Confirmation emails sent to sender and recipient");
+        } else if (data.emailStatus.senderEmailSent) {
+          toast.error("Recipient email failed to send", { duration: 4000 });
+        } else if (data.emailStatus.recipientEmailSent) {
+          toast.error("Sender email failed to send", { duration: 4000 });
+        } else {
+          toast.error("Both confirmation emails failed to send", { duration: 4000 });
+        }
+      }
+      
       onRegenerateTracking();
       // Only reset form on success
       setFormData({
