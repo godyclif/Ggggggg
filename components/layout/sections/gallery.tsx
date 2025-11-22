@@ -89,7 +89,7 @@ export const GallerySection = () => {
 
       <div className="mt-12 text-center">
         <p className="text-muted-foreground">
-          With over 50,000 sq ft of warehouse space and a fleet of 100+ vehicles, we're equipped to handle shipments of any size.
+          With over 50,000 sq ft of warehouse space and a fleet of 100+ vehicles, we&apos;re equipped to handle shipments of any size.
         </p>
       </div>
     </section>
