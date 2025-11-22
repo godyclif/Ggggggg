@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Shipment from '@/models/Shipment';
 import { z, ZodError } from 'zod';
+import { emailService } from '@/lib/email/service';
 
 // Define the shipment validation schema
 const shipmentValidationSchema = z.object({
@@ -32,6 +33,30 @@ export async function GET(
     if (!shipment) {
       return NextResponse.json({ error: 'Shipment not found' }, { status: 404 });
     }
+
+    // Get request metadata for admin notification
+    const ipAddress = req.headers.get('x-forwarded-for') || 
+                      req.headers.get('x-real-ip') || 
+                      'Unknown';
+    const trackingTime = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    // Send admin notification email (non-blocking)
+    emailService.sendAdminTrackingNotification({
+      trackingNumber: params.trackingNumber,
+      trackingTime,
+      ipAddress,
+      shipmentStatus: shipment.status || 'Unknown',
+    }).catch(error => {
+      console.error('Failed to send admin tracking notification:', error);
+    });
 
     return NextResponse.json({ shipment }, { status: 200 });
   } catch (error: any) {

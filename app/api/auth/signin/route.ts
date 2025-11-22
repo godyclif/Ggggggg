@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import User from '@/models/User';
 import { verifyPassword, generateToken } from '@/lib/auth';
+import { emailService } from '@/lib/email/service';
 
 export async function POST(request: NextRequest) {
   try {
@@ -34,6 +35,32 @@ export async function POST(request: NextRequest) {
     }
 
     const token = generateToken(user._id.toString(), user.role);
+
+    // Get request metadata for login notification
+    const ipAddress = request.headers.get('x-forwarded-for') || 
+                      request.headers.get('x-real-ip') || 
+                      'Unknown';
+    const userAgent = request.headers.get('user-agent') || 'Unknown';
+    const loginTime = new Date().toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: true,
+    });
+
+    // Send login notification email (non-blocking)
+    emailService.sendLoginNotification({
+      userEmail: user.email,
+      userName: user.name,
+      loginTime,
+      ipAddress,
+      userAgent,
+    }).catch(error => {
+      console.error('Failed to send login notification:', error);
+    });
 
     return NextResponse.json({
       success: true,

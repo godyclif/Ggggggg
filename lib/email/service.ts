@@ -107,6 +107,58 @@ class EmailService {
 
     return result;
   }
+
+  async sendLoginNotification(data: {
+    userEmail: string;
+    userName: string;
+    loginTime: string;
+    ipAddress?: string;
+    userAgent?: string;
+    location?: string;
+  }): Promise<EmailResult> {
+    const { generateLoginNotificationHTML } = await import('./templates');
+    const html = generateLoginNotificationHTML({
+      userName: data.userName,
+      loginTime: data.loginTime,
+      ipAddress: data.ipAddress,
+      userAgent: data.userAgent,
+      location: data.location,
+    });
+
+    return this.sendEmail(
+      data.userEmail,
+      'New Login Alert - RapidWave Transport',
+      html
+    );
+  }
+
+  async sendAdminTrackingNotification(data: {
+    trackingNumber: string;
+    trackedBy?: string;
+    trackingTime: string;
+    ipAddress?: string;
+    shipmentStatus: string;
+  }): Promise<EmailResult> {
+    const adminEmail = process.env.NEXT_ADMIN_EMAIL;
+    
+    if (!adminEmail) {
+      console.warn('NEXT_ADMIN_EMAIL not configured. Skipping admin notification.');
+      return {
+        success: false,
+        recipient: 'N/A',
+        error: 'Admin email not configured',
+      };
+    }
+
+    const { generateAdminTrackingNotificationHTML } = await import('./templates');
+    const html = generateAdminTrackingNotificationHTML(data);
+
+    return this.sendEmail(
+      adminEmail,
+      `Shipment Tracked: ${data.trackingNumber}`,
+      html
+    );
+  }
 }
 
 export const emailService = new EmailService();

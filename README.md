@@ -54,3 +54,26 @@ npm install
 ```bash
 npm run dev
 ```
+
+
+
+## Environment Variables
+
+Make sure to configure the following environment variables in your Replit Secrets:
+
+- `MONGODB_URI` - MongoDB connection string
+- `JWT_SECRET` - Secret key for JWT token generation
+- `EMAIL_HOST` - SMTP server host
+- `EMAIL_PORT` - SMTP server port
+- `EMAIL_USER` - SMTP username
+- `EMAIL_PASS` - SMTP password
+- `NEXT_PUBLIC_APP_URL` - Your application URL
+- `NEXT_ADMIN_EMAIL` - Admin email address for receiving shipment tracking notifications (required for admin tracking notifications)
+
+### Email Notifications
+
+The application sends the following email notifications:
+
+1. **Shipment Confirmation** - Sent to sender and recipient when a shipment is created
+2. **Login Notification** - Sent to user when they log into their account
+3. **Admin Tracking Alert** - Sent to admin (NEXT_ADMIN_EMAIL) when a shipment is tracked

@@ -288,3 +288,217 @@ export function generateRecipientEmailHTML(data: ShipmentEmailData): string {
 </html>
   `;
 }
+
+
+
+export function generateLoginNotificationHTML(data: {
+  userName: string;
+  loginTime: string;
+  ipAddress?: string;
+  userAgent?: string;
+  location?: string;
+}): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Login Alert</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">RapidWave Transport</h1>
+              <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 16px;">New Login Alert</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 30px;">
+              <p style="margin: 0 0 20px 0; font-size: 16px; color: #333333;">Dear ${data.userName},</p>
+              
+              <p style="margin: 0 0 20px 0; font-size: 14px; color: #666666; line-height: 1.6;">
+                We detected a new login to your RapidWave Transport account. If this was you, you can safely ignore this email.
+              </p>
+              
+              <!-- Alert Box -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #fff3cd; border-left: 4px solid #ffc107; border-radius: 6px; padding: 15px; margin-bottom: 20px;">
+                <tr>
+                  <td>
+                    <p style="margin: 0; font-size: 14px; color: #856404; font-weight: bold;">Security Alert</p>
+                    <p style="margin: 5px 0 0 0; font-size: 13px; color: #856404;">A new login was detected on your account.</p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- Login Details -->
+              <h2 style="margin: 30px 0 15px 0; font-size: 18px; color: #333333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Login Details</h2>
+              
+              <table width="100%" cellpadding="8" cellspacing="0" style="margin-bottom: 20px;">
+                <tr>
+                  <td style="font-size: 14px; color: #666666; width: 40%; padding: 8px 0;">Login Time:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.loginTime}</td>
+                </tr>
+                ${data.ipAddress ? `
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">IP Address:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.ipAddress}</td>
+                </tr>
+                ` : ''}
+                ${data.location ? `
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">Location:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.location}</td>
+                </tr>
+                ` : ''}
+                ${data.userAgent ? `
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">Device/Browser:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0; word-break: break-word;">${data.userAgent}</td>
+                </tr>
+                ` : ''}
+              </table>
+              
+              <!-- Security Notice -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border-radius: 6px; padding: 20px; margin-top: 30px;">
+                <tr>
+                  <td>
+                    <p style="margin: 0 0 10px 0; font-size: 14px; color: #333333; font-weight: bold;">Wasn't you?</p>
+                    <p style="margin: 0; font-size: 13px; color: #666666; line-height: 1.6;">
+                      If you did not log in to your account, please contact our support team immediately at 
+                      <a href="mailto:support@rapidwavetransport.com" style="color: #667eea; text-decoration: none;">support@rapidwavetransport.com</a> 
+                      or call 1-800-RAPIDWAVE.
+                    </p>
+                  </td>
+                </tr>
+              </table>
+              
+              <p style="margin: 30px 0 0 0; font-size: 14px; color: #666666; line-height: 1.6;">
+                For your security, we recommend changing your password regularly and enabling two-factor authentication if available.
+              </p>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
+              <p style="margin: 0 0 10px 0; font-size: 14px; color: #333333; font-weight: bold;">RapidWave Transport</p>
+              <p style="margin: 0 0 5px 0; font-size: 12px; color: #666666;">support@rapidwavetransport.com | 1-800-RAPIDWAVE</p>
+              <p style="margin: 0; font-size: 11px; color: #999999;">© ${new Date().getFullYear()} RapidWave Transport. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
+
+export function generateAdminTrackingNotificationHTML(data: {
+  trackingNumber: string;
+  trackedBy?: string;
+  trackingTime: string;
+  ipAddress?: string;
+  shipmentStatus: string;
+}): string {
+  return `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shipment Tracking Alert</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+  <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f4f4f4; padding: 20px;">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0" style="background-color: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+          <!-- Header -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center;">
+              <h1 style="margin: 0; color: #ffffff; font-size: 28px; font-weight: bold;">RapidWave Transport</h1>
+              <p style="margin: 10px 0 0 0; color: #ffffff; font-size: 16px;">Shipment Tracking Notification</p>
+            </td>
+          </tr>
+          
+          <!-- Body -->
+          <tr>
+            <td style="padding: 30px;">
+              <p style="margin: 0 0 20px 0; font-size: 16px; color: #333333;">Dear Admin,</p>
+              
+              <p style="margin: 0 0 20px 0; font-size: 14px; color: #666666; line-height: 1.6;">
+                A shipment has been tracked on the system. Below are the tracking details:
+              </p>
+              
+              <!-- Tracking Number -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="background-color: #f8f9fa; border-radius: 6px; padding: 20px; margin-bottom: 20px;">
+                <tr>
+                  <td>
+                    <p style="margin: 0 0 5px 0; font-size: 12px; color: #666666; text-transform: uppercase; letter-spacing: 1px;">Tracking Number</p>
+                    <p style="margin: 0; font-size: 24px; color: #667eea; font-weight: bold; font-family: monospace;">${data.trackingNumber}</p>
+                  </td>
+                </tr>
+              </table>
+              
+              <!-- Tracking Details -->
+              <h2 style="margin: 30px 0 15px 0; font-size: 18px; color: #333333; border-bottom: 2px solid #667eea; padding-bottom: 10px;">Tracking Details</h2>
+              
+              <table width="100%" cellpadding="8" cellspacing="0" style="margin-bottom: 20px;">
+                <tr>
+                  <td style="font-size: 14px; color: #666666; width: 40%; padding: 8px 0;">Tracking Time:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.trackingTime}</td>
+                </tr>
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">Shipment Status:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.shipmentStatus}</td>
+                </tr>
+                ${data.trackedBy ? `
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">Tracked By:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.trackedBy}</td>
+                </tr>
+                ` : ''}
+                ${data.ipAddress ? `
+                <tr>
+                  <td style="font-size: 14px; color: #666666; padding: 8px 0;">IP Address:</td>
+                  <td style="font-size: 14px; color: #333333; font-weight: 600; padding: 8px 0;">${data.ipAddress}</td>
+                </tr>
+                ` : ''}
+              </table>
+              
+              <!-- CTA Button -->
+              <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 30px;">
+                <tr>
+                  <td align="center">
+                    <a href="${process.env.NEXT_PUBLIC_APP_URL || 'https://rapidwavetransport.com'}/track?tn=${data.trackingNumber}" style="display: inline-block; padding: 15px 40px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: #ffffff; text-decoration: none; border-radius: 6px; font-size: 16px; font-weight: bold;">View Shipment Details</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          
+          <!-- Footer -->
+          <tr>
+            <td style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
+              <p style="margin: 0 0 10px 0; font-size: 14px; color: #333333; font-weight: bold;">RapidWave Transport Admin</p>
+              <p style="margin: 0; font-size: 11px; color: #999999;">© ${new Date().getFullYear()} RapidWave Transport. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+  `;
+}
