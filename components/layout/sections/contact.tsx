@@ -43,7 +43,7 @@ export const ContactSection = () => {
       firstName: "",
       lastName: "",
       email: "",
-      subject: "Web Development",
+      subject: "General Inquiry",
       message: "",
     },
   });
@@ -52,7 +52,7 @@ export const ContactSection = () => {
     const { firstName, lastName, email, subject, message } = values;
     console.log(values);
 
-    const mailToLink = `mailto:leomirandadev@gmail.com?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
+    const mailToLink = `mailto:support@rapidwavetransport.com?subject=${subject}&body=Hello I am ${firstName} ${lastName}, my Email is ${email}. %0D%0A${message}`;
 
     window.location.href = mailToLink;
   }
@@ -69,8 +69,7 @@ export const ContactSection = () => {
             <h2 className="text-3xl md:text-4xl font-bold">Connect With Us</h2>
           </div>
           <p className="mb-8 text-muted-foreground lg:w-5/6">
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptatum
-            ipsam sint enim exercitationem ex autem corrupti quas tenetur
+            Have questions about shipping, tracking, or our services? Our customer support team is ready to help you with all your logistics needs.
           </p>
 
           <div className="flex flex-col gap-4">
@@ -80,7 +79,7 @@ export const ContactSection = () => {
                 <div className="font-bold">Find us</div>
               </div>
 
-              <div>742 Evergreen Terrace, Springfield, IL 62704</div>
+              <div>1250 Harbor Blvd, Suite 300, Los Angeles, CA 90021</div>
             </div>
 
             <div>
@@ -89,16 +88,16 @@ export const ContactSection = () => {
                 <div className="font-bold">Call us</div>
               </div>
 
-              <div>+1 (619) 123-4567</div>
+              <div>+1 (800) 745-9283 (WAVE)</div>
             </div>
 
             <div>
               <div className="flex gap-2 mb-1">
                 <Mail />
-                <div className="font-bold">Mail US</div>
+                <div className="font-bold">Email Us</div>
               </div>
 
-              <div>leomirandadev@gmail.com</div>
+              <div>support@rapidwavetransport.com</div>
             </div>
 
             <div>
@@ -189,18 +188,23 @@ export const ContactSection = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="Web Development">
-                              Web Development
+                            <SelectItem value="Shipment Inquiry">
+                              Shipment Inquiry
                             </SelectItem>
-                            <SelectItem value="Mobile Development">
-                              Mobile Development
+                            <SelectItem value="Tracking Issue">
+                              Tracking Issue
                             </SelectItem>
-                            <SelectItem value="Figma Design">
-                              Figma Design
+                            <SelectItem value="Pricing Quote">
+                              Pricing Quote
                             </SelectItem>
-                            <SelectItem value="REST API">REST API</SelectItem>
-                            <SelectItem value="FullStack Project">
-                              FullStack Project
+                            <SelectItem value="Partnership Opportunity">
+                              Partnership Opportunity
+                            </SelectItem>
+                            <SelectItem value="Customer Support">
+                              Customer Support
+                            </SelectItem>
+                            <SelectItem value="General Inquiry">
+                              General Inquiry
                             </SelectItem>
                           </SelectContent>
                         </Select>

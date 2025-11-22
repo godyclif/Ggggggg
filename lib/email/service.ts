@@ -41,7 +41,7 @@ class EmailService {
       const transporter = this.getTransporter();
 
       await transporter.sendMail({
-        from: `RapidWave Logistics <${config.auth.user}>`,
+        from: `RapidWave Transport <${config.auth.user}>`,
         to,
         subject,
         html,

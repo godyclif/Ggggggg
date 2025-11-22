@@ -10,40 +10,40 @@ interface FeaturesProps {
 
 const featureList: FeaturesProps[] = [
   {
-    icon: "TabletSmartphone",
-    title: "Mobile Friendly",
+    icon: "MapPin",
+    title: "Real-Time Tracking",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam, consectetur.",
+      "Track your shipments in real-time with GPS-enabled monitoring and receive instant notifications at every milestone.",
   },
   {
-    icon: "BadgeCheck",
-    title: "Social Proof",
+    icon: "Globe",
+    title: "Global Network",
     description:
-      "Lorem ipsum dolor sit amet consectetur. Natus consectetur, odio ea accusamus aperiam.",
+      "Access to worldwide shipping routes with established partnerships across continents for seamless international delivery.",
   },
   {
-    icon: "Goal",
-    title: "Targeted Content",
+    icon: "PackageCheck",
+    title: "Careful Handling",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. odio ea accusamus aperiam.",
+      "Professional packaging services and trained handlers ensure your cargo arrives in perfect condition every time.",
   },
   {
-    icon: "PictureInPicture",
-    title: "Strong Visuals",
+    icon: "Truck",
+    title: "Fleet Management",
     description:
-      "Lorem elit. A odio velit cum aliquam. Natus consectetur dolores, odio ea accusamus aperiam.",
+      "Modern, well-maintained fleet with specialized vehicles for different cargo types from standard to temperature-controlled.",
   },
   {
-    icon: "MousePointerClick",
-    title: "Clear CTA",
+    icon: "FileText",
+    title: "Easy Documentation",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing. odio ea accusamus consectetur.",
+      "Streamlined customs clearance and digital documentation for hassle-free international shipping compliance.",
   },
   {
-    icon: "Newspaper",
-    title: "Clear Headline",
+    icon: "TrendingUp",
+    title: "Scalable Solutions",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur.",
+      "Flexible shipping options that grow with your business, from single packages to full container loads.",
   },
 ];
 
@@ -59,14 +59,13 @@ export const FeaturesSection = () => {
       </h2>
 
       <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
-        Lorem ipsum dolor, sit amet consectetur adipisicing elit. Voluptatem
-        fugiat, odit similique quasi sint reiciendis quidem iure veritatis optio
-        facere tenetur.
+        Advanced technology meets personalized service. Discover the features that make RapidWave Transport the preferred choice for businesses worldwide.
       </h3>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {featureList.map(({ icon, title, description }) => (
           <div key={title}>
+           
             <Card className="h-full bg-background border-0 shadow-none">
               <CardHeader className="flex justify-center items-center">
                 <div className="bg-primary/20 p-2 rounded-full ring-8 ring-primary/10 mb-4">

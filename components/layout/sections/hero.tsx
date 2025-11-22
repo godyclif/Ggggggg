@@ -18,9 +18,9 @@ export const HeroSection = () => {
   };
 
   const carouselImages = [
-    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
-    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
-    theme === "light" ? "/IMG_0273.png" : "/IMG_0273.png",
+    theme === "light" ? "/hero.png" : "/hero.png",
+    theme === "light" ? "/hero1.png" : "/hero1.png",
+    theme === "light" ? "/hero.png" : "/hero.png",
   ];
 
   return (

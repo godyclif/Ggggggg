@@ -4,47 +4,48 @@ import { Icon } from "@/components/ui/icon";
 import { Marquee } from "@devnomic/marquee";
 import "@devnomic/marquee/dist/index.css";
 import { icons } from "lucide-react";
-interface sponsorsProps {
+
+interface PartnerProps {
   icon: string;
   name: string;
 }
 
-const sponsors: sponsorsProps[] = [
+const partners: PartnerProps[] = [
   {
-    icon: "Crown",
-    name: "Acmebrand",
+    icon: "Ship",
+    name: "Maersk",
   },
   {
-    icon: "Vegan",
-    name: "Acmelogo",
+    icon: "Plane",
+    name: "DHL Express",
   },
   {
-    icon: "Ghost",
-    name: "Acmesponsor",
+    icon: "Truck",
+    name: "FedEx",
   },
   {
-    icon: "Puzzle",
-    name: "Acmeipsum",
+    icon: "Package",
+    name: "UPS",
   },
   {
-    icon: "Squirrel",
-    name: "Acme",
+    icon: "TrainFront",
+    name: "DB Schenker",
   },
   {
-    icon: "Cookie",
-    name: "Accmee",
+    icon: "Globe",
+    name: "Kuehne + Nagel",
   },
   {
-    icon: "Drama",
-    name: "Acmetech",
+    icon: "ShipWheel",
+    name: "CMA CGM",
   },
 ];
 
 export const SponsorsSection = () => {
   return (
-    <section id="sponsors" className="max-w-[75%] mx-auto pb-24 sm:pb-32">
-      <h2 className="text-lg md:text-xl text-center mb-6">
-        Our Platinum Sponsors
+    <section id="partners" className="max-w-[75%] mx-auto pb-24 sm:pb-32">
+      <h2 className="text-lg md:text-xl text-center mb-6 font-semibold">
+        Global Shipping & Logistics Partners
       </h2>
 
       <div className="mx-auto">
@@ -54,7 +55,7 @@ export const SponsorsSection = () => {
           innerClassName="gap-[3rem]"
           pauseOnHover
         >
-          {sponsors.map(({ icon, name }) => (
+          {partners.map(({ icon, name }) => (
             <div
               key={name}
               className="flex items-center text-xl md:text-2xl font-medium"

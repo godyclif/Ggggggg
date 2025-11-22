@@ -10,28 +10,28 @@ interface BenefitsProps {
 
 const benefitList: BenefitsProps[] = [
   {
-    icon: "Blocks",
-    title: "Build Brand Trust",
+    icon: "Shield",
+    title: "Secure Transportation",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur dolores.",
+      "Your cargo is protected with comprehensive insurance coverage and real-time security monitoring throughout the entire journey.",
   },
   {
-    icon: "LineChart",
-    title: "More Leads",
+    icon: "Clock",
+    title: "On-Time Delivery",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam, natus consectetur.",
+      "We guarantee 98% on-time delivery rate with precise scheduling and efficient route optimization for your shipments.",
   },
   {
-    icon: "Wallet",
-    title: "Higher Conversions",
+    icon: "DollarSign",
+    title: "Cost-Effective Solutions",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus consectetur. A odio velit cum aliquam",
+      "Competitive pricing without compromising quality. Get transparent quotes with no hidden fees for all your shipping needs.",
   },
   {
-    icon: "Sparkle",
-    title: "Test Marketing Ideas",
+    icon: "Headphones",
+    title: "24/7 Customer Support",
     description:
-      "Lorem ipsum dolor sit amet consectetur adipisicing elit. A odio velit cum aliquam. Natus consectetur dolores.",
+      "Our dedicated support team is available around the clock to assist with tracking, updates, and any shipping inquiries.",
   },
 ];
 
@@ -43,12 +43,10 @@ export const BenefitsSection = () => {
           <h2 className="text-lg text-primary mb-2 tracking-wider">Benefits</h2>
 
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Your Shortcut to Success
+            Why Choose RapidWave Transport
           </h2>
           <p className="text-xl text-muted-foreground mb-8">
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Non
-            ducimus reprehenderit architecto rerum similique facere odit
-            deleniti necessitatibus quo quae.
+            Experience reliable, efficient, and secure logistics solutions designed to meet your business needs with excellence in every delivery.
           </p>
         </div>
 

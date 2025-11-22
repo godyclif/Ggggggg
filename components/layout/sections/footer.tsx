@@ -15,7 +15,7 @@ export const FooterSection = () => {
             <Link href="/" className="flex font-bold items-center">
               <Image
                 src="/logo.png"
-                alt="RapidWave Logistics"
+                alt="RapidWave Transport"
                 className="h-12 w-auto"
                 width={100} 
                 height={50} 
@@ -24,86 +24,86 @@ export const FooterSection = () => {
           </div>
 
           <div className="flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Contact</h3>
+            <h3 className="font-bold text-lg">Services</h3>
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Github
+              <Link href="/track" className="opacity-60 hover:opacity-100">
+                Track Shipment
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Twitter
+              <Link href="/#services" className="opacity-60 hover:opacity-100">
+                Our Services
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Instagram
-              </Link>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Platforms</h3>
-            <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                iOS
-              </Link>
-            </div>
-
-            <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Android
-              </Link>
-            </div>
-
-            <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Web
+              <Link href="/contact" className="opacity-60 hover:opacity-100">
+                Get a Quote
               </Link>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Help</h3>
+            <h3 className="font-bold text-lg">Company</h3>
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
+              <Link href="/about" className="opacity-60 hover:opacity-100">
+                About Us
+              </Link>
+            </div>
+
+            <div>
+              <Link href="/team" className="opacity-60 hover:opacity-100">
+                Our Team
+              </Link>
+            </div>
+
+            <div>
+              <Link href="/testimonials" className="opacity-60 hover:opacity-100">
+                Testimonials
+              </Link>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-2">
+            <h3 className="font-bold text-lg">Support</h3>
+            <div>
+              <Link href="/contact" className="opacity-60 hover:opacity-100">
                 Contact Us
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
+              <Link href="/#faq" className="opacity-60 hover:opacity-100">
                 FAQ
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Feedback
+              <Link href="/contact" className="opacity-60 hover:opacity-100">
+                Customer Service
               </Link>
             </div>
           </div>
 
           <div className="flex flex-col gap-2">
-            <h3 className="font-bold text-lg">Socials</h3>
+            <h3 className="font-bold text-lg">Connect</h3>
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Twitch
+              <Link href="tel:+18007459283" className="opacity-60 hover:opacity-100">
+                Call: 1-800-WAVE
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Discord
+              <Link href="mailto:support@rapidwavetransport.com" className="opacity-60 hover:opacity-100">
+                Email Support
               </Link>
             </div>
 
             <div>
-              <Link href="#" className="opacity-60 hover:opacity-100">
-                Dribbble
-              </Link>
+              <span className="opacity-60">
+                24/7 Customer Service
+              </span>
             </div>
           </div>
         </div>
@@ -111,13 +111,18 @@ export const FooterSection = () => {
         <Separator className="my-6" />
         <section className="">
           <h3 className="">
-            &copy; {currentYear} Designed and developed by
+            &copy; {currentYear} RapidWave Transport. All rights reserved. | 
             <Link
-              target="_blank"
-              href="https://github.com/leoMirandaa"
+              href="/contact"
               className="text-primary transition-all border-primary hover:border-b-2 ml-1"
             >
-              Leo Miranda
+              Privacy Policy
+            </Link> | 
+            <Link
+              href="/contact"
+              className="text-primary transition-all border-primary hover:border-b-2 ml-1"
+            >
+              Terms of Service
             </Link>
           </h3>
         </section>

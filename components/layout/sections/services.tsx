@@ -10,64 +10,87 @@ enum ProService {
   YES = 1,
   NO = 0,
 }
+
 interface ServiceProps {
   title: string;
   pro: ProService;
   description: string;
 }
+
 const serviceList: ServiceProps[] = [
   {
-    title: "Custom Domain Integration",
+    title: "Real-Time Shipment Tracking",
     description:
-      "Lorem ipsum dolor sit, amet consectetur adipisicing elit adipisicing.",
-    pro: 0,
+      "Monitor shipments with live GPS, delivery timelines, and instant status updates for full transparency.",
+    pro: ProService.NO,
   },
   {
-    title: "Social Media Integrations",
+    title: "Smart Fleet Management",
     description:
-      "Lorem ipsum dolor sit, amet consectetur adipisicing elit. Molestiae, dicta.",
-    pro: 0,
+      "Manage vehicle health, fuel usage, and driver activity in one intuitive dashboard.",
+    pro: ProService.NO,
   },
   {
-    title: "Email Marketing Integrations",
-    description: "Lorem dolor sit amet adipisicing.",
-    pro: 0,
+    title: "Route Optimization & Dispatch",
+    description:
+      "Automatically assign drivers and build efficient routes to reduce delays and operational costs.",
+    pro: ProService.NO,
   },
   {
-    title: "SEO Optimization",
-    description: "Lorem ipsum dolor sit amet consectetur.",
-    pro: 1,
+    title: "Advanced Analytics Suite",
+    description:
+      "Unlock insights into performance, cost efficiency, delivery times, and operational KPIs with powerful reporting.",
+    pro: ProService.YES,
+  },
+  {
+    title: "Warehouse & Inventory Sync",
+    description:
+      "Synchronize stock levels, automate intake logs, and track movement across multiple warehouse locations.",
+    pro: ProService.YES,
+  },
+  {
+    title: "Automated Invoice & Billing",
+    description:
+      "Generate invoices, track payments, and manage expenses effortlessly with built-in financial automation.",
+    pro: ProService.YES,
   },
 ];
 
 export const ServicesSection = () => {
   return (
     <section id="services" className="container py-24 sm:py-32">
-      <h2 className="text-lg text-primary text-center mb-2 tracking-wider">
-        Services
-      </h2>
+      <div className="text-center mb-12">
+        <h2 className="text-lg text-primary mb-2 tracking-wider uppercase">
+          Services
+        </h2>
 
-      <h2 className="text-3xl md:text-4xl text-center font-bold mb-4">
-        Grow Your Business
-      </h2>
-      <h3 className="md:w-1/2 mx-auto text-xl text-center text-muted-foreground mb-8">
-        From marketing and sales to operations and strategy, we have the
-        expertise to help you achieve your goals.
-      </h3>
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        <h3 className="text-3xl md:text-4xl font-bold mb-4">
+          Powering Modern Transport & Logistics
+        </h3>
 
-      <div className="grid sm:grid-cols-2 lg:grid-cols-2 gap-4 w-full lg:w-[60%] mx-auto">
+        <p className="md:w-2/3 mx-auto text-lg text-muted-foreground">
+          Our platform helps logistics companies streamline operations,
+          automate workflows, and deliver goods faster and more efficiently.
+        </p>
+      </div>
+
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {serviceList.map(({ title, description, pro }) => (
           <Card
             key={title}
-            className="bg-muted/60 dark:bg-card h-full relative"
+            className="bg-muted/50 dark:bg-card h-full relative border-none shadow-sm hover:shadow-md transition"
           >
             <CardHeader>
-              <CardTitle>{title}</CardTitle>
-              <CardDescription>{description}</CardDescription>
+              <CardTitle className="text-xl font-semibold">
+                {title}
+              </CardTitle>
+              <CardDescription className="text-sm mt-2 leading-relaxed">
+                {description}
+              </CardDescription>
             </CardHeader>
+
             <Badge
-              data-pro={ProService.YES === pro}
+              data-pro={pro === ProService.YES}
               variant="secondary"
               className="absolute -top-2 -right-3 data-[pro=false]:hidden"
             >
