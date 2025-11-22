@@ -50,7 +50,7 @@ interface ShipmentFormData {
 
 interface ShipmentFormProps {
   formData: ShipmentFormData;
-  setFormData: (data: ShipmentFormData) => void;
+  setFormData: React.Dispatch<React.SetStateAction<ShipmentFormData>>;
   isEditMode?: boolean;
 }
 
