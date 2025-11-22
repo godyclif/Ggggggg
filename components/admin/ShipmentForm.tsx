@@ -88,7 +88,7 @@ export function ShipmentForm({ formData, setFormData, isEditMode }: ShipmentForm
     
     if (latDiff > 0.0001 || lngDiff > 0.0001) {
       // Use callback form to avoid dependency on formData
-      setFormData((prev: any) => ({ ...prev, latitude: lat, longitude: lng }));
+      setFormData((prev: ShipmentFormData) => ({ ...prev, latitude: lat, longitude: lng }));
     }
   };
 
