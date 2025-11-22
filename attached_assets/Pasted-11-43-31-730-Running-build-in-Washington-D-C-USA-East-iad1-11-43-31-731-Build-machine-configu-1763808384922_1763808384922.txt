@@ -1,0 +1,61 @@
+11:43:31.730 Running build in Washington, D.C., USA (East) – iad1
+11:43:31.731 Build machine configuration: 2 cores, 8 GB
+11:43:31.891 Cloning github.com/godyclif/Ggggggg (Branch: main, Commit: 5d0e340)
+11:43:31.892 Previous build caches not available.
+11:43:32.172 Cloning completed: 281.000ms
+11:43:32.643 Running "vercel build"
+11:43:33.060 Vercel CLI 48.10.5
+11:43:33.543 Installing dependencies...
+11:43:36.667 npm warn deprecated rimraf@3.0.2: Rimraf versions prior to v4 are no longer supported
+11:43:37.506 npm warn deprecated inflight@1.0.6: This module is not supported, and leaks memory. Do not use it. Check out lru-cache if you want a good and tested way to coalesce async requests by a key value, which is much more comprehensive and powerful.
+11:43:39.772 npm warn deprecated glob@7.2.3: Glob versions prior to v9 are no longer supported
+11:43:48.434 
+11:43:48.434 added 701 packages in 15s
+11:43:48.435 
+11:43:48.435 150 packages are looking for funding
+11:43:48.442   run `npm fund` for details
+11:43:48.508 Detected Next.js version: 14.2.3
+11:43:48.512 Running "npm run build"
+11:43:48.622 
+11:43:48.622 > shipping-website@0.1.0 build
+11:43:48.622 > next build
+11:43:48.622 
+11:43:49.158 Attention: Next.js now collects completely anonymous telemetry regarding usage.
+11:43:49.158 This information is used to shape Next.js' roadmap and prioritize features.
+11:43:49.158 You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+11:43:49.158 https://nextjs.org/telemetry
+11:43:49.158 
+11:43:49.218   ▲ Next.js 14.2.3
+11:43:49.218 
+11:43:49.309    Creating an optimized production build ...
+11:44:22.118 Browserslist: caniuse-lite is outdated. Please run:
+11:44:22.119   npx update-browserslist-db@latest
+11:44:22.119   Why you should do it regularly: https://github.com/browserslist/update-db#readme
+11:44:24.850  ✓ Compiled successfully
+11:44:24.851    Linting and checking validity of types ...
+11:44:30.120 
+11:44:30.120 ./components/admin/GoogleMap.tsx
+11:44:30.121 146:6  Warning: React Hook useEffect has missing dependencies: 'latitude', 'longitude', and 'onLocationChange'. Either include them or remove the dependency array. If 'onLocationChange' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+11:44:30.121 211:6  Warning: React Hook useEffect has missing dependencies: 'latitude', 'longitude', 'onLocationChange', 'recipientLat', and 'recipientLng'. Either include them or remove the dependency array. If 'onLocationChange' changes too often, find the parent component that defines it and wrap that definition in useCallback.  react-hooks/exhaustive-deps
+11:44:30.122 
+11:44:30.122 ./components/admin/RouteMap.tsx
+11:44:30.122 80:6  Warning: React Hook useEffect has missing dependencies: 'currentLat' and 'currentLng'. Either include them or remove the dependency array.  react-hooks/exhaustive-deps
+11:44:30.122 
+11:44:30.122 ./components/admin/ShipmentForm.tsx
+11:44:30.123 329:6  Warning: React Hook useEffect has a missing dependency: 'formData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+11:44:30.123 349:6  Warning: React Hook useEffect has a missing dependency: 'formData'. Either include it or remove the dependency array.  react-hooks/exhaustive-deps
+11:44:30.123 
+11:44:30.123 info  - Need to disable some ESLint rules? Learn more here: https://nextjs.org/docs/basic-features/eslint#disabling-rules
+11:44:39.040 Failed to compile.
+11:44:39.041 
+11:44:39.042 ./components/admin/ShipmentForm.tsx:91:19
+11:44:39.042 Type error: Argument of type '(prev: ShipmentFormData) => { latitude: number; longitude: number; senderName: string; senderEmail: string; senderPhone: string; senderAddress: string; senderCity: string; senderState: string; senderZip: string; ... 22 more ...; status?: string | undefined; }' is not assignable to parameter of type 'ShipmentFormData'.
+11:44:39.042 
+11:44:39.042 [0m [90m 89 |[39m     [36mif[39m (latDiff [33m>[39m [35m0.0001[39m [33m||[39m lngDiff [33m>[39m [35m0.0001[39m) {[0m
+11:44:39.042 [0m [90m 90 |[39m       [90m// Use callback form to avoid dependency on formData[39m[0m
+11:44:39.042 [0m[31m[1m>[22m[39m[90m 91 |[39m       setFormData((prev[33m:[39m [33mShipmentFormData[39m) [33m=>[39m ({ [33m...[39mprev[33m,[39m latitude[33m:[39m lat[33m,[39m longitude[33m:[39m lng }))[33m;[39m[0m
+11:44:39.043 [0m [90m    |[39m                   [31m[1m^[22m[39m[0m
+11:44:39.043 [0m [90m 92 |[39m     }[0m
+11:44:39.043 [0m [90m 93 |[39m   }[33m;[39m[0m
+11:44:39.043 [0m [90m 94 |[39m[0m
+11:44:39.103 Error: Command "npm run build" exited with 1
