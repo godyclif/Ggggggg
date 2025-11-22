@@ -6,14 +6,16 @@ import { Navbar } from "@/components/layout/navbar";
 import { ThemeProvider } from "@/components/layout/theme-provider";
 import { Toaster } from "react-hot-toast";
 import { AuthProvider } from "@/contexts/AuthContext";
+import Script from "next/script";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "RapidWave Transport - Trusted Global Shipping",
-  description: "5 years of excellence in transportation and logistics services",
+  description:
+    "5 years of excellence in transportation and logistics services",
   icons: {
     icon: [
       { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
@@ -48,6 +50,7 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
+
       <body className={cn("min-h-screen bg-background", inter.className)}>
         <ThemeProvider
           attribute="class"
@@ -58,29 +61,50 @@ export default function RootLayout({
           <AuthProvider>
             <Navbar />
             {children}
+
             <Toaster
               position="top-center"
               toastOptions={{
                 duration: 4000,
                 style: {
-                  background: 'hsl(var(--background))',
-                  color: 'hsl(var(--foreground))',
-                  border: '1px solid hsl(var(--border))',
+                  background: "hsl(var(--background))",
+                  color: "hsl(var(--foreground))",
+                  border: "1px solid hsl(var(--border))",
                 },
                 success: {
                   iconTheme: {
-                    primary: 'hsl(var(--primary))',
-                    secondary: 'hsl(var(--primary-foreground))',
+                    primary: "hsl(var(--primary))",
+                    secondary: "hsl(var(--primary-foreground))",
                   },
                 },
                 error: {
                   iconTheme: {
-                    primary: 'hsl(var(--destructive))',
-                    secondary: 'hsl(var(--destructive-foreground))',
+                    primary: "hsl(var(--destructive))",
+                    secondary: "hsl(var(--destructive-foreground))",
                   },
                 },
               }}
             />
+
+            {/* --- TAWK.TO LIVE CHAT SCRIPT --- */}
+            <Script
+              id="tawk-to"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
+                  (function(){
+                    var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
+                    s1.async=true;
+                    s1.src='https://embed.tawk.to/6921c2fbdadafd1960196308/1jalu3ag3';
+                    s1.charset='UTF-8';
+                    s1.setAttribute('crossorigin','*');
+                    s0.parentNode.insertBefore(s1,s0);
+                  })();
+                `,
+              }}
+            />
+            {/* --- END TAWK.TO --- */}
           </AuthProvider>
         </ThemeProvider>
       </body>
