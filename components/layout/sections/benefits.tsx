@@ -1,7 +1,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
-import { icons } from "lucide-react";
+import { CheckCircle2, Shield, Clock, DollarSign, Headphones } from "lucide-react";
 import Image from "next/image";
 
 interface BenefitsProps {
@@ -59,19 +58,19 @@ export const BenefitsSection = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-3 animate-slide-in-left" style={{ animationDelay: '0.1s' }}>
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon name="CheckCircle2" size={24} className="text-primary" />
+                <CheckCircle2 size={24} className="text-primary" />
               </div>
               <span className="text-lg font-medium">5+ Years of Excellence</span>
             </div>
             <div className="flex items-center gap-3 animate-slide-in-left" style={{ animationDelay: '0.2s' }}>
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon name="CheckCircle2" size={24} className="text-primary" />
+                <CheckCircle2 size={24} className="text-primary" />
               </div>
               <span className="text-lg font-medium">50,000+ Shipments Delivered</span>
             </div>
             <div className="flex items-center gap-3 animate-slide-in-left" style={{ animationDelay: '0.3s' }}>
               <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                <Icon name="CheckCircle2" size={24} className="text-primary" />
+                <CheckCircle2 size={24} className="text-primary" />
               </div>
               <span className="text-lg font-medium">Global Coverage Network</span>
             </div>
@@ -95,11 +94,10 @@ export const BenefitsSection = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
                 <div className="absolute top-4 right-4">
                   <div className="w-12 h-12 rounded-full bg-primary/90 backdrop-blur-sm flex items-center justify-center shadow-lg">
-                    <Icon
-                      name={icon as keyof typeof icons}
-                      size={24}
-                      className="text-primary-foreground"
-                    />
+                    {icon === "Shield" && <Shield size={24} className="text-primary-foreground" />}
+                    {icon === "Clock" && <Clock size={24} className="text-primary-foreground" />}
+                    {icon === "DollarSign" && <DollarSign size={24} className="text-primary-foreground" />}
+                    {icon === "Headphones" && <Headphones size={24} className="text-primary-foreground" />}
                   </div>
                 </div>
                 <div className="absolute bottom-4 left-4 right-4">
