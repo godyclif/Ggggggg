@@ -57,13 +57,15 @@ export const Navbar = () => {
         <NavigationMenu className="mx-auto">
           <NavigationMenuList className="container h-14 px-4 w-screen flex justify-between ">
             <NavigationMenuItem className="font-bold flex">
-              <Link href="/" className="ml-2 font-bold text-xl flex items-center">
+              <Link href="/" className="ml-2 font-bold text-xl flex items-center gap-2">
                 <Image
                   src="/logo.png"
                   alt="RapidWave Transport"
-                  width={36}
-                  height={36}
+                  width={48}
+                  height={48}
+                  className="object-contain"
                 />
+                <span className="text-lg font-bold">RapidWave</span>
               </Link>
             </NavigationMenuItem>
 
@@ -85,9 +87,11 @@ export const Navbar = () => {
                       <Image
                         src="/logo.png"
                         alt="RapidWave Transport"
-                        width={36}
-                        height={36}
+                        width={48}
+                        height={48}
+                        className="object-contain"
                       />
+                      <span>RapidWave</span>
                     </SheetTitle>
                   </SheetHeader>
                   <nav className="flex flex-col justify-center items-center gap-2 mt-4">
